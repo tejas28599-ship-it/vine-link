@@ -1,0 +1,13 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Local tooling
+.claude/
+node_modules/
+*.log
+npm-debug.log*
+.env

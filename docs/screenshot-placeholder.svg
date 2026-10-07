@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 640" width="270" height="480">
+  <rect width="360" height="640" rx="28" fill="#1c2417"/>
+  <rect x="22" y="150" width="316" height="316" rx="18" fill="#3a2b20"/>
+  <g fill="#5b4431">
+    <rect x="34" y="162" width="52" height="52" rx="10"/><rect x="94" y="162" width="52" height="52" rx="10"/><rect x="154" y="162" width="52" height="52" rx="10"/><rect x="214" y="162" width="52" height="52" rx="10"/><rect x="274" y="162" width="52" height="52" rx="10"/>
+  </g>
+  <path d="M60 188 H300" stroke="#F2545B" stroke-width="16" stroke-linecap="round"/>
+  <path d="M60 248 V420 H300" fill="none" stroke="#3D7DF2" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+  <text x="180" y="560" text-anchor="middle" font-family="system-ui, sans-serif" font-size="20" fill="#c9bda6">Screenshot coming soon</text>
+  <text x="180" y="96" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="800" font-size="40" fill="#7bcb57">Vine Link</text>
+</svg>

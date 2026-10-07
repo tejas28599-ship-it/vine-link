@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Vine Link</title>
+  <meta name="description" content="A calm garden puzzle. Grow vines to connect matching flower seeds and fill every patch of soil.">
+  <meta name="theme-color" content="#1c2417">
+  <meta name="color-scheme" content="dark">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Vine Link">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7H5V3M5.4 7.1A8 8 0 1 1 4.3 15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-restart" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-can" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9.5h9.5V18a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2z"/><path d="M5 11.5C2 11.5 2 16.5 5 16.5"/><path d="M14.5 15.5L20 9.5"/><path d="M18.6 7.9l3 3"/><path d="M6.5 9.5c.6-2.2 2-3.2 3.3-3.2s2.6 1 3.2 3.2"/></g><g fill="currentColor"><circle cx="22" cy="5.2" r="1"/><circle cx="19.6" cy="4" r=".85"/></g></symbol>
+      <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="3.6" stroke-dasharray="3.2 3.08"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.2"/></symbol>
+      <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19C4 10 10 4 20 4c0 10-6 16-15 15z" fill="currentColor"/><path d="M5 19L14 10" stroke="#1c2417" stroke-width="1.6" stroke-linecap="round"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24"><g fill="currentColor"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></g></symbol>
+    </defs>
+  </svg>
+
+  <div id="app">
+    <!-- Home -------------------------------------------------------------------------------->
+    <section id="screen-home" class="screen active" aria-label="Home">
+      <button class="icon-btn corner" id="btn-settings" aria-label="Settings"><svg><use href="#i-gear"/></svg></button>
+      <div class="home-hero">
+        <svg class="hero-art" viewBox="0 0 220 120" aria-hidden="true">
+          <path d="M20 96 C 60 96, 60 40, 110 40 S 160 96, 200 96" fill="none" stroke="#5fae4a" stroke-width="9" stroke-linecap="round"/>
+          <path d="M20 96 C 60 96, 60 40, 110 40 S 160 96, 200 96" fill="none" stroke="#b9ec9a" stroke-width="2.4" stroke-linecap="round" opacity=".55" transform="translate(-1.5 -2)"/>
+          <g fill="#7bcb57"><ellipse cx="58" cy="70" rx="11" ry="5" transform="rotate(-50 58 70)"/><ellipse cx="88" cy="40" rx="11" ry="5" transform="rotate(-20 88 40)"/><ellipse cx="134" cy="48" rx="11" ry="5" transform="rotate(30 134 48)"/><ellipse cx="166" cy="78" rx="11" ry="5" transform="rotate(55 166 78)"/></g>
+          <g transform="translate(20 96)"><g fill="#F2545B"><ellipse cx="0" cy="-11" rx="7" ry="10"/><ellipse cx="0" cy="-11" rx="7" ry="10" transform="rotate(72)"/><ellipse cx="0" cy="-11" rx="7" ry="10" transform="rotate(144)"/><ellipse cx="0" cy="-11" rx="7" ry="10" transform="rotate(216)"/><ellipse cx="0" cy="-11" rx="7" ry="10" transform="rotate(288)"/></g><circle r="7" fill="#ffd66b"/></g>
+          <g transform="translate(200 96)"><g fill="#F2545B"><ellipse cx="0" cy="-11" rx="7" ry="10"/><ellipse cx="0" cy="-11" rx="7" ry="10" transform="rotate(72)"/><ellipse cx="0" cy="-11" rx="7" ry="10" transform="rotate(144)"/><ellipse cx="0" cy="-11" rx="7" ry="10" transform="rotate(216)"/><ellipse cx="0" cy="-11" rx="7" ry="10" transform="rotate(288)"/></g><circle r="7" fill="#ffd66b"/></g>
+        </svg>
+        <h1 class="title">Vine Link</h1>
+        <p class="tagline">Grow vines. Link the seeds. Let the garden bloom.</p>
+      </div>
+      <div class="home-actions">
+        <button class="btn primary big" id="btn-play">
+          <span class="btn-label">Play</span>
+          <span class="btn-sub" id="home-level">Level 1 · Seedling</span>
+        </button>
+        <div class="row">
+          <button class="btn" id="btn-levels"><svg><use href="#i-grid"/></svg>Levels</button>
+          <button class="btn" id="btn-daily"><svg><use href="#i-sun"/></svg>Daily Garden<span class="dot" id="daily-dot" hidden></span></button>
+        </div>
+        <p class="home-progress" id="home-progress"></p>
+      </div>
+    </section>
+
+    <!-- Level select ------------------------------------------------------------------------>
+    <section id="screen-levels" class="screen" aria-label="Choose a level">
+      <header class="bar">
+        <button class="icon-btn" data-nav="home" aria-label="Back"><svg><use href="#i-back"/></svg></button>
+        <h2>Gardens</h2>
+        <span class="bar-spacer"></span>
+      </header>
+      <nav class="pack-tabs" id="pack-tabs" role="tablist"></nav>
+      <p class="pack-blurb" id="pack-blurb"></p>
+      <div class="level-grid scroll" id="level-grid"></div>
+    </section>
+
+    <!-- Game -------------------------------------------------------------------------------->
+    <section id="screen-game" class="screen" aria-label="Puzzle">
+      <header class="bar topbar">
+        <button class="icon-btn" id="btn-back" aria-label="Back to menu"><svg><use href="#i-back"/></svg></button>
+        <div class="level-info">
+          <div class="level-title" id="level-title">Level 1</div>
+          <div class="level-sub"><span id="level-pack">Seedling</span> · Moves <b id="moves">0</b></div>
+        </div>
+        <button class="icon-btn" id="btn-undo" aria-label="Undo"><svg><use href="#i-undo"/></svg></button>
+        <button class="icon-btn" id="btn-restart" aria-label="Restart"><svg><use href="#i-restart"/></svg></button>
+        <button class="icon-btn hint" id="btn-hint" aria-label="Hint (watering can)"><svg><use href="#i-can"/></svg><span class="badge" id="hint-count">3</span></button>
+      </header>
+      <main class="board-wrap" id="board-wrap">
+        <canvas id="board" aria-label="Garden grid" role="img"></canvas>
+        <div class="loading" id="loading" hidden><span class="spinner"></span>Growing today's garden…</div>
+      </main>
+      <footer class="bar bottombar">
+        <div class="stat"><span class="stat-label">Pairs connected</span><span class="stat-value" id="pairs">0/0</span></div>
+        <div class="stat grow">
+          <span class="stat-label">Garden filled <b id="filled">0%</b></span>
+          <div class="meter"><div class="meter-fill" id="filled-bar"></div></div>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <canvas id="magnifier" aria-hidden="true"></canvas>
+  <canvas id="petals" aria-hidden="true"></canvas>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Win overlay ----------------------------------------------------------------------------->
+  <div class="overlay" id="overlay-win" hidden>
+    <div class="card win-card" role="dialog" aria-labelledby="win-title">
+      <h2 id="win-title">Garden in Bloom!</h2>
+      <p class="win-detail" id="win-detail">Solved in 6 moves</p>
+      <div class="perfect" id="win-perfect" hidden><svg><use href="#i-leaf"/></svg>Perfect: every pair drawn once</div>
+      <div class="win-actions">
+        <button class="btn ghost" id="btn-win-menu">Menu</button>
+        <button class="btn primary" id="btn-next"><span class="btn-label" id="next-label">Next garden</span><span class="auto-ring" id="auto-ring"></span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings -------------------------------------------------------------------------------->
+  <div class="overlay" id="overlay-settings" hidden>
+    <div class="card" role="dialog" aria-labelledby="settings-title">
+      <h2 id="settings-title">Settings</h2>
+      <label class="toggle"><span>Sound</span><input type="checkbox" id="set-sound"><i></i></label>
+      <label class="toggle"><span>Vibration</span><input type="checkbox" id="set-vibration"><i></i></label>
+      <label class="toggle"><span>Colorblind mode<small>Symbols on seeds, unique petal shapes</small></span><input type="checkbox" id="set-colorblind"><i></i></label>
+      <button class="btn ghost danger" id="btn-reset">Reset progress</button>
+      <button class="btn primary" data-close>Done</button>
+      <p class="fineprint">Vine Link · made with vanilla JS · works offline</p>
+    </div>
+  </div>
+
+  <!-- Tutorial -------------------------------------------------------------------------------->
+  <div class="overlay" id="overlay-tutorial" hidden>
+    <div class="card tutorial-card" role="dialog" aria-labelledby="tut-title">
+      <div class="tut-art" id="tut-art"></div>
+      <h2 id="tut-title">Grow your garden</h2>
+      <p id="tut-text"></p>
+      <button class="btn primary" data-close>Got it</button>
+    </div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
