@@ -1,7 +1,7 @@
 // Vine Link service worker: precache the whole game (including levels.json) so it plays offline.
 // Bump VERSION whenever any cached file changes; old caches are deleted on activate.
 
-const VERSION = 'vine-link-v1';
+const VERSION = 'vine-link-v2';
 const FILES = [
   './',
   'index.html',

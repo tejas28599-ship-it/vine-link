@@ -534,25 +534,25 @@ function tutorialArt(kind) {
   if (kind === 'rocks') {
     return wrap(5, 3, grid(5, 3) +
       `<ellipse cx="100" cy="60" rx="16" ry="14" fill="#8d897d"/><ellipse cx="94" cy="54" rx="5" ry="3" fill="rgba(255,255,255,.3)"/>` +
-      vine([[0, 1], [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [4, 1]], '#3D7DF2') + seed(0, 1, '#3D7DF2') + seed(4, 1, '#3D7DF2') +
-      vine([[0, 2], [1, 2], [2, 2], [3, 2], [4, 2]], '#F2545B') + seed(0, 2, '#F2545B') + seed(4, 2, '#F2545B'));
+      vine([[0, 1], [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [4, 1]], '#2B4BFF') + seed(0, 1, '#2B4BFF') + seed(4, 1, '#2B4BFF') +
+      vine([[0, 2], [1, 2], [2, 2], [3, 2], [4, 2]], '#FF1F1F') + seed(0, 2, '#FF1F1F') + seed(4, 2, '#FF1F1F'));
   }
   if (kind === 'bridges') {
     return wrap(5, 3, grid(5, 3) +
       `<rect x="82" y="44" width="36" height="32" rx="4" fill="#a0744a"/><rect x="84" y="42" width="32" height="36" rx="4" fill="#7a5634" opacity=".7"/>` +
-      vine([[2, 0], [2, 1], [2, 2]], '#FFD43B') + vine([[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]], '#3FD3E6') +
-      seed(2, 0, '#FFD43B') + seed(2, 2, '#FFD43B') + seed(0, 1, '#3FD3E6') + seed(4, 1, '#3FD3E6'));
+      vine([[2, 0], [2, 1], [2, 2]], '#F5E400') + vine([[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]], '#00E5F0') +
+      seed(2, 0, '#F5E400') + seed(2, 2, '#F5E400') + seed(0, 1, '#00E5F0') + seed(4, 1, '#00E5F0'));
   }
   if (kind === 'hints') {
     return wrap(5, 3, `<g transform="translate(70 18) scale(3.4)" color="#7bcb57"><use href="#i-can"/></g>` +
-      `<g fill="#3FD3E6" opacity=".8"><circle cx="160" cy="42" r="4"/><circle cx="170" cy="58" r="3.5"/><circle cx="158" cy="72" r="3"/></g>`);
+      `<g fill="#00E5F0" opacity=".8"><circle cx="160" cy="42" r="4"/><circle cx="170" cy="58" r="3.5"/><circle cx="158" cy="72" r="3"/></g>`);
   }
   if (kind === 'daily') {
     return wrap(5, 3, `<g transform="translate(70 10) scale(4)" color="#ffd66b"><use href="#i-sun"/></g>`);
   }
   return wrap(5, 3, grid(5, 3) +
-    vine([[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]], '#F2545B') + seed(0, 0, '#F2545B') + seed(4, 0, '#F2545B') +
-    vine([[0, 1], [0, 2], [1, 2], [2, 2]], '#3D7DF2') + seed(0, 1, '#3D7DF2') + seed(4, 2, '#3D7DF2') +
+    vine([[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]], '#FF1F1F') + seed(0, 0, '#FF1F1F') + seed(4, 0, '#FF1F1F') +
+    vine([[0, 1], [0, 2], [1, 2], [2, 2]], '#2B4BFF') + seed(0, 1, '#2B4BFF') + seed(4, 2, '#2B4BFF') +
     `<circle cx="100" cy="100" r="15" fill="none" stroke="#fff" stroke-width="3" opacity=".7"/>`);
 }
 

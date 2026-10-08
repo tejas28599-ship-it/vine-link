@@ -138,8 +138,8 @@ export class BoardRenderer {
 
     // board bed
     const bedGrad = ctx.createLinearGradient(0, 0, 0, S);
-    bedGrad.addColorStop(0, '#3a2b20');
-    bedGrad.addColorStop(1, '#2a1f17');
+    bedGrad.addColorStop(0, '#221a14');
+    bedGrad.addColorStop(1, '#17110d');
     ctx.fillStyle = bedGrad;
     roundRect(ctx, 0, 0, S, S, S * 0.04);
     ctx.fill();
@@ -152,7 +152,8 @@ export class BoardRenderer {
       const h = hash(cell * 7 + level.size);
       const kind = level.kind[cell];
       // soil tile
-      const base = kind === ROCK ? [64, 50, 40] : mix([96, 72, 52], [86, 63, 45], h);
+      // dark soil so the bright vine colors stand out
+      const base = kind === ROCK ? [34, 27, 22] : mix([60, 46, 36], [53, 40, 31], h);
       const tg = ctx.createLinearGradient(x, y, x, y + cs);
       tg.addColorStop(0, rgba(mix(base, [255, 230, 200], 0.06)));
       tg.addColorStop(1, rgba(mix(base, [0, 0, 0], 0.1)));
@@ -435,11 +436,11 @@ export class BoardRenderer {
       const x = g.x + (cell % this.n) * cs, y = g.y + Math.floor(cell / this.n) * cs;
       const a = this.cover[cell];
       if (a > 0.01 && level.kind[cell] !== BRIDGE) {
-        ctx.globalAlpha = a;
+        ctx.globalAlpha = a * 0.4; // faint grass, so it never competes with green vines
         ctx.drawImage(this.grass[cell % 3], x, y, cs, cs);
         const col = this.coverColor[cell];
         if (col >= 0) {
-          ctx.globalAlpha = a * 0.2;
+          ctx.globalAlpha = a * 0.28;
           ctx.fillStyle = rgba(COLORS[col].flower);
           roundRect(ctx, x + cs * 0.045, y + cs * 0.045, cs * 0.91, cs * 0.91, cs * 0.2);
           ctx.fill();
@@ -716,6 +717,12 @@ export class BoardRenderer {
     ctx.fill();
     ctx.strokeStyle = rgba(col.dark, 0.8);
     ctx.lineWidth = Math.max(1, cs * 0.03);
+    ctx.stroke();
+    // light outer ring: keeps dark seeds (maroon, purple, blue) visible on dark soil
+    ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+    ctx.lineWidth = Math.max(1, cs * 0.025);
+    ctx.beginPath();
+    ctx.arc(x, y, r + Math.max(1, cs * 0.03), 0, TAU);
     ctx.stroke();
 
     if (this.colorblind) {

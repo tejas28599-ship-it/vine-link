@@ -15,7 +15,7 @@ mkdirSync(OUT, { recursive: true });
 // ---- design in a 512×512 space -------------------------------------------------------------
 const BG_TOP = [44, 66, 36], BG_BOTTOM = [28, 36, 23];
 const VINE = [95, 174, 74], VINE_HI = [185, 236, 154], LEAF = [123, 203, 87];
-const PETAL_A = [242, 84, 91], PETAL_B = [61, 125, 242], HEART = [255, 214, 107];
+const PETAL_A = [255, 31, 31], PETAL_B = [43, 75, 255], HEART = [255, 214, 107];
 
 // Vine: cubic Bézier from the lower-left flower to the upper-right flower.
 const P0 = [150, 360], P1 = [150, 190], P2 = [362, 322], P3 = [362, 152];

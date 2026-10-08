@@ -84,22 +84,21 @@ start, so vines cut mid-drag grow back if you pull away again.
 
 ## 4. Flower palette (12)
 
-Ordered so small levels use the most distinct hues first. Colorblind mode adds a unique symbol
-on every seed and a unique petal count/shape on every flower, so color is never the only cue.
+The classic bright puzzle colors: fully saturated, with vines drawn in the pure color on dark soil
+so every pair is easy to see. Colorblind mode adds a unique symbol on every seed and a unique
+petal count/shape on every flower, so color is never the only cue.
 
-| # | Name        | Hex       | Symbol  | Petals          |
-|---|-------------|-----------|---------|-----------------|
-| 0 | Poppy       | `#F2545B` | dot     | 5 round         |
-| 1 | Cornflower  | `#3D7DF2` | triangle| 3 pointed       |
-| 2 | Sunflower   | `#FFD43B` | star    | 8 thin          |
-| 3 | Clover      | `#34C76F` | plus    | 4 heart         |
-| 4 | Marigold    | `#FF8C2E` | diamond | 6 round         |
-| 5 | Morning-glory| `#3FD3E6`| drop    | 5 pointed       |
-| 6 | Orchid      | `#B06CF5` | square  | 4 round         |
-| 7 | Peony       | `#FF8FC7` | heart   | 6 heart         |
-| 8 | Daisy       | `#F7F3E8` | ring    | 12 thin         |
-| 9 | Ruby        | `#C2185B` | hexagon | 6 pointed       |
-| 10| Lime        | `#C4F04A` | moon    | 7 round         |
-| 11| Wheat       | `#D9B38C` | bars    | 4 pointed       |
-
-All names, art and copy are original to Vine Link.
+| # | Name    | Hex       | Symbol   | Petals      |
+|---|---------|-----------|----------|-------------|
+| 0 | Red     | `#FF1F1F` | dot      | 5 round     |
+| 1 | Green   | `#14B814` | triangle | 3 pointed   |
+| 2 | Blue    | `#2B4BFF` | star     | 8 thin      |
+| 3 | Yellow  | `#F5E400` | plus     | 4 heart     |
+| 4 | Orange  | `#FF8A00` | diamond  | 6 round     |
+| 5 | Cyan    | `#00E5F0` | drop     | 5 pointed   |
+| 6 | Magenta | `#F21CC4` | square   | 4 round     |
+| 7 | Maroon  | `#B8392F` | heart    | 6 heart     |
+| 8 | Purple  | `#8E2FD0` | ring     | 12 thin     |
+| 9 | White   | `#FFFFFF` | hexagon  | 6 pointed   |
+| 10| Gray    | `#A8A8A8` | moon     | 7 round     |
+| 11| Lime    | `#6BFF2E` | bars     | 4 pointed   |
