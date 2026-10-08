@@ -718,7 +718,7 @@ export class BoardRenderer {
     ctx.strokeStyle = rgba(col.dark, 0.45);
     ctx.lineWidth = Math.max(1, cs * 0.02);
     ctx.stroke();
-    // light outer ring: keeps dark seeds (maroon, purple, blue) visible on dark soil
+    // light outer ring: keeps dark seeds (purple, blue) visible on dark soil
     ctx.strokeStyle = 'rgba(255,255,255,0.55)';
     ctx.lineWidth = Math.max(1, cs * 0.025);
     ctx.beginPath();

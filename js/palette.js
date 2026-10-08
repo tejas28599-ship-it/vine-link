@@ -11,7 +11,7 @@ export const PALETTE = [
   { name: 'Orange', hex: '#FF9900', symbol: 'diamond', petals: 6, shape: 'round' },
   { name: 'Cyan', hex: '#00FFFF', symbol: 'drop', petals: 5, shape: 'pointed' },
   { name: 'Magenta', hex: '#FF1FE6', symbol: 'square', petals: 4, shape: 'round' },
-  { name: 'Maroon', hex: '#D2473A', symbol: 'heart', petals: 6, shape: 'heart' },
+  { name: 'Pink', hex: '#FF8FC8', symbol: 'heart', petals: 6, shape: 'heart' },
   { name: 'Purple', hex: '#B44CFF', symbol: 'ring', petals: 12, shape: 'thin' },
   { name: 'White', hex: '#FFFFFF', symbol: 'hexagon', petals: 6, shape: 'pointed' },
   { name: 'Gray', hex: '#C4C4C4', symbol: 'moon', petals: 7, shape: 'round' },

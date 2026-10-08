@@ -90,15 +90,15 @@ petal count/shape on every flower, so color is never the only cue.
 
 | # | Name    | Hex       | Symbol   | Petals      |
 |---|---------|-----------|----------|-------------|
-| 0 | Red     | `#FF1F1F` | dot      | 5 round     |
-| 1 | Green   | `#14B814` | triangle | 3 pointed   |
-| 2 | Blue    | `#2B4BFF` | star     | 8 thin      |
-| 3 | Yellow  | `#F5E400` | plus     | 4 heart     |
-| 4 | Orange  | `#FF8A00` | diamond  | 6 round     |
-| 5 | Cyan    | `#00E5F0` | drop     | 5 pointed   |
-| 6 | Magenta | `#F21CC4` | square   | 4 round     |
-| 7 | Maroon  | `#B8392F` | heart    | 6 heart     |
-| 8 | Purple  | `#8E2FD0` | ring     | 12 thin     |
+| 0 | Red     | `#FF1A1A` | dot      | 5 round     |
+| 1 | Green   | `#00D62B` | triangle | 3 pointed   |
+| 2 | Blue    | `#2E6BFF` | star     | 8 thin      |
+| 3 | Yellow  | `#FFF200` | plus     | 4 heart     |
+| 4 | Orange  | `#FF9900` | diamond  | 6 round     |
+| 5 | Cyan    | `#00FFFF` | drop     | 5 pointed   |
+| 6 | Magenta | `#FF1FE6` | square   | 4 round     |
+| 7 | Pink    | `#FF8FC8` | heart    | 6 heart     |
+| 8 | Purple  | `#B44CFF` | ring     | 12 thin     |
 | 9 | White   | `#FFFFFF` | hexagon  | 6 pointed   |
-| 10| Gray    | `#A8A8A8` | moon     | 7 round     |
-| 11| Lime    | `#6BFF2E` | bars     | 4 pointed   |
+| 10| Gray    | `#C4C4C4` | moon     | 7 round     |
+| 11| Lime    | `#A6FF1A` | bars     | 4 pointed   |
