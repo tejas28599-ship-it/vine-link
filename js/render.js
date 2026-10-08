@@ -138,8 +138,8 @@ export class BoardRenderer {
 
     // board bed
     const bedGrad = ctx.createLinearGradient(0, 0, 0, S);
-    bedGrad.addColorStop(0, '#221a14');
-    bedGrad.addColorStop(1, '#17110d');
+    bedGrad.addColorStop(0, '#0d0b09');
+    bedGrad.addColorStop(1, '#080706');
     ctx.fillStyle = bedGrad;
     roundRect(ctx, 0, 0, S, S, S * 0.04);
     ctx.fill();
@@ -153,7 +153,7 @@ export class BoardRenderer {
       const kind = level.kind[cell];
       // soil tile
       // dark soil so the bright vine colors stand out
-      const base = kind === ROCK ? [34, 27, 22] : mix([60, 46, 36], [53, 40, 31], h);
+      const base = kind === ROCK ? [14, 12, 10] : mix([30, 25, 21], [26, 22, 19], h);
       const tg = ctx.createLinearGradient(x, y, x, y + cs);
       tg.addColorStop(0, rgba(mix(base, [255, 230, 200], 0.06)));
       tg.addColorStop(1, rgba(mix(base, [0, 0, 0], 0.1)));
@@ -436,11 +436,11 @@ export class BoardRenderer {
       const x = g.x + (cell % this.n) * cs, y = g.y + Math.floor(cell / this.n) * cs;
       const a = this.cover[cell];
       if (a > 0.01 && level.kind[cell] !== BRIDGE) {
-        ctx.globalAlpha = a * 0.4; // faint grass, so it never competes with green vines
+        ctx.globalAlpha = a * 0.18; // a hint of grass; the vine color stays dominant
         ctx.drawImage(this.grass[cell % 3], x, y, cs, cs);
         const col = this.coverColor[cell];
         if (col >= 0) {
-          ctx.globalAlpha = a * 0.28;
+          ctx.globalAlpha = a * 0.3;
           ctx.fillStyle = rgba(COLORS[col].flower);
           roundRect(ctx, x + cs * 0.045, y + cs * 0.045, cs * 0.91, cs * 0.91, cs * 0.2);
           ctx.fill();
@@ -475,15 +475,15 @@ export class BoardRenderer {
       const v = geoms[c];
       if (!v) continue;
       const boost = this.pulseBoost(c, now);
-      this.strokePts(v.pts, cs * 0.66, rgba(COLORS[c].flower, 0.13 + boost * 0.25));
+      this.strokePts(v.pts, cs * 0.7, rgba(COLORS[c].flower, 0.2 + boost * 0.3));
     }
     for (let c = 0; c < geoms.length; c++) {
       const v = geoms[c];
       if (!v) continue;
-      this.strokePts(v.pts, cs * 0.3, rgba(COLORS[c].vine));
+      this.strokePts(v.pts, cs * 0.38, rgba(COLORS[c].vine));
       ctx.save();
       ctx.translate(-cs * 0.035, -cs * 0.035);
-      this.strokePts(v.pts, cs * 0.075, rgba(COLORS[c].light, 0.42));
+      this.strokePts(v.pts, cs * 0.07, rgba(COLORS[c].light, 0.3));
       ctx.restore();
       this.drawLeaves(c, v, cs, now);
     }
@@ -548,17 +548,17 @@ export class BoardRenderer {
         ctx.rect(x, y, cs, cy - band - y);
         ctx.rect(x, cy + band, cs, y + cs - cy - band);
         ctx.clip();
-        this.strokePts(geoms[c].pts, cs * 0.3, rgba(COLORS[c].vine));
+        this.strokePts(geoms[c].pts, cs * 0.38, rgba(COLORS[c].vine));
         ctx.restore();
         // shadow where the vine slips under the deck
         ctx.fillStyle = 'rgba(20,12,6,0.35)';
         ctx.fillRect(x + cs * 0.3, cy - band - cs * 0.04, cs * 0.4, cs * 0.04);
       }
       for (const c of lanes.h) {
-        this.strokePts(geoms[c].pts, cs * 0.3, rgba(COLORS[c].vine));
+        this.strokePts(geoms[c].pts, cs * 0.38, rgba(COLORS[c].vine));
         ctx.save();
         ctx.translate(-cs * 0.035, -cs * 0.035);
-        this.strokePts(geoms[c].pts, cs * 0.075, rgba(COLORS[c].light, 0.42));
+        this.strokePts(geoms[c].pts, cs * 0.07, rgba(COLORS[c].light, 0.3));
         ctx.restore();
       }
       ctx.restore();
@@ -681,7 +681,7 @@ export class BoardRenderer {
     if (bloom > 0.01) {
       const count = this.colorblind ? info.petals : 5;
       const shape = this.colorblind ? info.shape : 'round';
-      const len = cs * 0.42 * bloom * breathe;
+      const len = cs * 0.5 * bloom * breathe;
       const wid = cs * (count > 7 ? 0.12 : count < 5 ? 0.24 : 0.19) * bloom;
       const rot = c * 0.6 + which * 0.4 + sway;
       ctx.save();
@@ -692,12 +692,12 @@ export class BoardRenderer {
         ctx.rotate((i / count) * TAU);
         this.petalPath(shape, len, wid);
         const pg = ctx.createLinearGradient(0, 0, len, 0);
-        pg.addColorStop(0, rgba(col.dark));
-        pg.addColorStop(0.35, rgba(col.flower));
+        pg.addColorStop(0, rgba(col.flower));
+        pg.addColorStop(0.6, rgba(col.flower));
         pg.addColorStop(1, rgba(col.light));
         ctx.fillStyle = pg;
         ctx.fill();
-        ctx.strokeStyle = rgba(col.dark, 0.5);
+        ctx.strokeStyle = rgba(col.dark, 0.25);
         ctx.lineWidth = Math.max(0.6, cs * 0.015);
         ctx.stroke();
         ctx.restore();
@@ -706,8 +706,8 @@ export class BoardRenderer {
     }
 
     // seed / flower heart
-    const r = cs * (0.29 - 0.1 * clamp(bloom, 0, 1));
-    const heart = bloom > 0.01 ? mix(col.flower, [255, 206, 84], 0.85 * clamp(bloom, 0, 1)) : col.flower;
+    const r = cs * (0.34 - 0.13 * clamp(bloom, 0, 1));
+    const heart = bloom > 0.01 ? mix(col.flower, [255, 230, 140], 0.3 * clamp(bloom, 0, 1)) : col.flower;
     const sg = ctx.createRadialGradient(x - r * 0.35, y - r * 0.4, r * 0.1, x, y, r);
     sg.addColorStop(0, rgba(mix(heart, [255, 255, 255], 0.45)));
     sg.addColorStop(1, rgba(heart));
@@ -715,8 +715,8 @@ export class BoardRenderer {
     ctx.beginPath();
     ctx.arc(x, y, r, 0, TAU);
     ctx.fill();
-    ctx.strokeStyle = rgba(col.dark, 0.8);
-    ctx.lineWidth = Math.max(1, cs * 0.03);
+    ctx.strokeStyle = rgba(col.dark, 0.45);
+    ctx.lineWidth = Math.max(1, cs * 0.02);
     ctx.stroke();
     // light outer ring: keeps dark seeds (maroon, purple, blue) visible on dark soil
     ctx.strokeStyle = 'rgba(255,255,255,0.55)';
