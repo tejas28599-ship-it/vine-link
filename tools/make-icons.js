@@ -37,9 +37,9 @@ function sample(x, y, { full }) {
     const qx = Math.max(Math.abs(x - 256) - (256 - r), 0), qy = Math.max(Math.abs(y - 256) - (256 - r), 0);
     if (Math.hypot(qx, qy) > r) return null;
   }
-  // indigo glow behind the board
+  // soft charcoal glow behind the board
   const glow = Math.max(0, 1 - Math.hypot(x - 256, y - 40) / 520);
-  let col = [16 + 43 * glow, 17 + 46 * glow, 46 + 112 * glow];
+  let col = [11 + 34 * glow, 11 + 34 * glow, 12 + 40 * glow];
   const inGrid = x >= ORIGIN && y >= ORIGIN && x <= ORIGIN + 3 * CELL && y <= ORIGIN + 3 * CELL;
   if (inGrid) {
     col = [255, 255, 255];
@@ -152,7 +152,7 @@ const pipes = PIPES.map((p) => {
     `<circle cx="${a[0].toFixed(1)}" cy="${a[1].toFixed(1)}" r="${DOT}" fill="${rgb(p.color)}"/><circle cx="${b[0].toFixed(1)}" cy="${b[1].toFixed(1)}" r="${DOT}" fill="${rgb(p.color)}"/>`;
 });
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-<defs><radialGradient id="bg" cx="50%" cy="8%" r="100%"><stop offset="0" stop-color="#3b3f9e"/><stop offset="1" stop-color="#10112e"/></radialGradient></defs>
+<defs><radialGradient id="bg" cx="50%" cy="8%" r="100%"><stop offset="0" stop-color="#2b2b31"/><stop offset="1" stop-color="#0b0b0c"/></radialGradient></defs>
 <rect width="512" height="512" rx="112" fill="url(#bg)"/>
 <rect x="${ORIGIN}" y="${ORIGIN}" width="320" height="320" fill="#ffffff"/>
 ${tints.join('')}
