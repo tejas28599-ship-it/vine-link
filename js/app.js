@@ -534,7 +534,7 @@ function tutorialArt(kind) {
   let grid = '';
   for (let i = 0; i <= W; i++) grid += `<path d="M${i * S || 0.5} 0V${H * S}" />`;
   for (let i = 0; i <= H; i++) grid += `<path d="M0 ${i * S || 0.5}H${W * S}" />`;
-  const wrap = (body) => `<svg viewBox="-1 -1 ${W * S + 2} ${H * S + 2}" aria-hidden="true">${body}<g stroke="#CDD3F2" stroke-width="3">${grid}</g></svg>`;
+  const wrap = (body) => `<svg viewBox="-1 -1 ${W * S + 2} ${H * S + 2}" aria-hidden="true">${body}<g stroke="#E1E4F2" stroke-width="1.5">${grid}</g></svg>`;
   const R = '#FF0000', B = '#0000FF', Y = '#EEEE00', C = '#00FFFF';
   if (kind === 'rocks') {
     return wrap(`<rect x="80" y="40" width="40" height="40" fill="#4B5170"/><path d="M90 50l20 20M110 50l-20 20" stroke="#8C94C2" stroke-width="3"/>` +

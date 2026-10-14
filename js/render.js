@@ -1,6 +1,6 @@
-// Vine Link — canvas renderer. A bright game board: white raised tiles on a lavender frame,
-// thick straight pipes with a darker edge, glossy dots, and filled tiles tinted in their pipe's
-// color. The static tiles are drawn once into an offscreen canvas and blitted every frame.
+// Vine Link — canvas renderer. A bright game board: one solid white surface with thin grid lines,
+// thick straight pipes with a darker edge, glossy dots, and filled cells tinted in their pipe's
+// color. The static board is drawn once into an offscreen canvas and blitted every frame.
 //
 // Performance: no shadows or blur, the rAF loop only runs while something moves, and the device
 // pixel ratio is capped at 2.
@@ -9,23 +9,13 @@ import { COLORS, PALETTE, rgba } from './palette.js';
 import { ROCK, BRIDGE, isComplete } from './game.js';
 
 const TAU = Math.PI * 2;
-const FRAME = '#CDD3F2'; // gaps between tiles + board border
-const TILE = '#FFFFFF';
-const TILE_SHADE = '#B7BEE3'; // the tile's bottom edge, for a raised look
+const BOARD = '#FFFFFF'; // one solid white board
+const GRID = '#E1E4F2'; // thin light lines between cells
 const ROCK_TILE = '#4B5170';
 const ROCK_MARK = '#8C94C2';
 const DECK = '#AEB5DC';
 const RAIL = '#7C85BC';
 
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.arcTo(x + w, y, x + w, y + h, r);
-  ctx.arcTo(x + w, y + h, x, y + h, r);
-  ctx.arcTo(x, y + h, x, y, r);
-  ctx.arcTo(x, y, x + w, y, r);
-  ctx.closePath();
-}
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const luminance = ([r, g, b]) => (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
 
@@ -108,15 +98,14 @@ export class BoardRenderer {
     return [g.x + (c + 0.5) * g.cell, g.y + (r + 0.5) * g.cell];
   }
 
-  /** Tile rectangle for a cell (CSS px): [x, y, w, h, radius]. */
-  tileRect(cell) {
+  /** Rectangle of a cell (CSS px): [x, y, w, h]. */
+  cellRect(cell) {
     const g = this.geom();
     const cs = g.cell;
-    const inset = Math.max(1, cs * 0.045);
-    return [g.x + (cell % this.n) * cs + inset, g.y + Math.floor(cell / this.n) * cs + inset, cs - inset * 2, cs - inset * 2, cs * 0.16];
+    return [g.x + (cell % this.n) * cs, g.y + Math.floor(cell / this.n) * cs, cs, cs];
   }
 
-  /** Frame, tiles and blocked cells never change during a level: draw them once. */
+  /** The white board, grid lines and blocked cells never change during a level: draw them once. */
   buildStatic() {
     const { level, dpr } = this;
     const S = Math.round(this.cssSize * dpr);
@@ -125,34 +114,38 @@ export class BoardRenderer {
     bg.height = S;
     const ctx = bg.getContext('2d');
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.fillStyle = FRAME;
+    ctx.fillStyle = BOARD;
     ctx.fillRect(0, 0, this.cssSize, this.cssSize);
-    const cs = this.geom().cell;
+    const g = this.geom();
+    const cs = g.cell;
     for (let cell = 0; cell < level.cellCount; cell++) {
-      const [x, y, w, h, r] = this.tileRect(cell);
-      if (level.kind[cell] === ROCK) {
-        ctx.fillStyle = ROCK_TILE;
-        roundRect(ctx, x, y, w, h, r);
-        ctx.fill();
-        ctx.strokeStyle = ROCK_MARK;
-        ctx.lineWidth = Math.max(1.5, cs * 0.07);
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(x + w * 0.3, y + h * 0.3);
-        ctx.lineTo(x + w * 0.7, y + h * 0.7);
-        ctx.moveTo(x + w * 0.7, y + h * 0.3);
-        ctx.lineTo(x + w * 0.3, y + h * 0.7);
-        ctx.stroke();
-        continue;
-      }
-      const lip = Math.max(1, cs * 0.05);
-      ctx.fillStyle = TILE_SHADE;
-      roundRect(ctx, x, y + lip, w, h - lip, r);
-      ctx.fill();
-      ctx.fillStyle = TILE;
-      roundRect(ctx, x, y, w, h - lip, r);
-      ctx.fill();
+      if (level.kind[cell] !== ROCK) continue;
+      const [x, y, w, h] = this.cellRect(cell);
+      ctx.fillStyle = ROCK_TILE;
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = ROCK_MARK;
+      ctx.lineWidth = Math.max(1.5, cs * 0.07);
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(x + w * 0.3, y + h * 0.3);
+      ctx.lineTo(x + w * 0.7, y + h * 0.7);
+      ctx.moveTo(x + w * 0.7, y + h * 0.3);
+      ctx.lineTo(x + w * 0.3, y + h * 0.7);
+      ctx.stroke();
     }
+    // thin grid lines, snapped to device pixels so they stay crisp
+    const end = g.x + this.n * cs;
+    ctx.strokeStyle = GRID;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = 0; i <= this.n; i++) {
+      const p = Math.round((g.x + i * cs) * dpr) / dpr + 0.5 / dpr;
+      ctx.moveTo(p, g.y);
+      ctx.lineTo(p, end);
+      ctx.moveTo(g.x, p);
+      ctx.lineTo(end, p);
+    }
+    ctx.stroke();
     this.bg = bg;
   }
 
@@ -292,10 +285,9 @@ export class BoardRenderer {
       const a = this.cover[cell];
       const col = this.coverColor[cell];
       if (a <= 0.01 || col < 0 || level.kind[cell] !== 0) continue;
-      const [x, y, w, h, r] = this.tileRect(cell);
-      ctx.fillStyle = rgba(COLORS[col].rgb, 0.26 * a);
-      roundRect(ctx, x, y, w, h, r);
-      ctx.fill();
+      const [x, y, w, h] = this.cellRect(cell);
+      ctx.fillStyle = rgba(COLORS[col].rgb, 0.22 * a);
+      ctx.fillRect(x + 0.5, y + 0.5, w - 1, h - 1);
     }
 
     // the finger: a big translucent circle in the active color
@@ -455,7 +447,7 @@ export class BoardRenderer {
     m.beginPath();
     m.arc(W / 2, H / 2, W / 2 - 2 * dpr, 0, TAU);
     m.clip();
-    m.fillStyle = FRAME;
+    m.fillStyle = BOARD;
     m.fillRect(0, 0, W, H);
     m.drawImage(canvas, sx, sy, sw, sh, 0, 0, W, H);
     m.restore();

@@ -14,7 +14,7 @@ mkdirSync(OUT, { recursive: true });
 
 // ---- design in a 512×512 space -------------------------------------------------------------
 // A black tile with an olive grid, two bright pipes with round ends, and their cells tinted.
-const GRID = [205, 211, 242];
+const GRID = [225, 228, 242];
 const RED = [255, 0, 0], BLUE = [0, 0, 255];
 const ORIGIN = 96, CELL = 320 / 3; // 3×3 grid inside the tile
 const at = (c, r) => [ORIGIN + (c + 0.5) * CELL, ORIGIN + (r + 0.5) * CELL];
