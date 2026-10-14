@@ -2,7 +2,7 @@
 
 import * as G from './game.js';
 import * as Levels from './levels.js';
-import { BoardRenderer, PetalShower } from './render.js';
+import { BoardRenderer, Confetti } from './render.js';
 import { attachInput } from './input.js';
 import * as Sound from './audio.js';
 import * as Store from './storage.js';
@@ -12,28 +12,28 @@ const AUTO_ADVANCE_MS = 4000;
 
 const TUTORIALS = {
   basics: {
-    title: 'Grow your garden',
-    text: 'Drag from a seed to its matching seed to grow a vine. Link every pair and cover every patch of soil to make the garden bloom.',
+    title: 'Connect the dots',
+    text: 'Drag from a dot to the other dot of the same color to draw a pipe. Pipes can’t cross. Connect every pair and fill every cell to solve the level.',
     art: 'basics',
   },
   hints: {
-    title: 'The watering can',
-    text: 'Stuck? Tap the watering can and one correct vine grows by itself. You get 3 per garden, and undo won’t give them back.',
+    title: 'Hints',
+    text: 'Stuck? Tap the ? button and one correct pipe is drawn for you. You get 3 per level, and undo won’t give them back.',
     art: 'hints',
   },
   rocks: {
-    title: 'Rocks',
-    text: 'Vines can’t grow through rocks. Plan your routes around them. Rocks don’t need to be covered.',
+    title: 'Blocked cells',
+    text: 'Pipes can’t go through blocked cells (marked with ×). Route around them. They don’t need to be filled.',
     art: 'rocks',
   },
   bridges: {
     title: 'Bridges',
-    text: 'A bridge carries two vines: one crosses left–right, the other top–bottom. Vines go straight across a bridge, and both lanes must be filled.',
+    text: 'A bridge carries two pipes: one crosses left–right, the other top–bottom. Pipes go straight across a bridge, and both directions must be used.',
     art: 'bridges',
   },
   daily: {
-    title: 'Daily Garden',
-    text: 'A fresh garden every day, the same one for every gardener. Come back tomorrow for a new one.',
+    title: 'Daily Puzzle',
+    text: 'A new puzzle every day, the same one for everyone. Come back tomorrow for the next one.',
     art: 'daily',
   },
 };
@@ -59,7 +59,7 @@ const app = {
 };
 
 const board = new BoardRenderer($('board'), $('magnifier'));
-const petals = new PetalShower($('petals'));
+const confetti = new Confetti($('confetti'));
 board.setColorblind(save.settings.colorblind);
 Sound.setEnabled(save.settings.sound);
 
@@ -99,8 +99,8 @@ function renderHome() {
   const done = Object.keys(save.progress.completed).length;
   const perfect = Object.values(save.progress.completed).filter((c) => c.perfect).length;
   $('home-progress').textContent = done
-    ? `${done} of ${Levels.TOTAL_LEVELS} gardens grown · ${perfect} perfect`
-    : 'Cozy puzzles, one vine at a time';
+    ? `${done} of ${Levels.TOTAL_LEVELS} levels solved · ${perfect} perfect`
+    : `${Levels.TOTAL_LEVELS} levels · every one has a single solution`;
   $('daily-dot').hidden = !!save.daily[Levels.dateKey()];
 }
 
@@ -135,7 +135,7 @@ function renderLevels() {
     const unlocked = isUnlocked(n);
     b.className = 'lvl' + (rec ? ' done' : '') + (unlocked ? '' : ' locked') + (n === current ? ' current' : '');
     b.setAttribute('aria-label', `Level ${n}${rec ? ', completed' : ''}${rec?.perfect ? ', perfect' : ''}${unlocked ? '' : ', locked'}`);
-    b.innerHTML = unlocked ? `${n}${rec?.perfect ? '<svg class="leaf"><use href="#i-leaf"/></svg>' : ''}` : '<svg><use href="#i-lock"/></svg>';
+    b.innerHTML = unlocked ? `${n}${rec?.perfect ? '<svg class="star"><use href="#i-star"/></svg>' : ''}` : '<svg><use href="#i-lock"/></svg>';
     if (unlocked) b.addEventListener('click', () => { Sound.tap(); startLevel(n); });
     else b.disabled = true;
     grid.appendChild(b);
@@ -173,8 +173,9 @@ function startLevel(n) {
   if (n > (save.progress.current || 1)) save.progress.current = n;
   persist();
   $('level-title').textContent = `Level ${n}`;
-  $('level-pack').textContent = `${Levels.PACKS[Levels.packOf(n)].name} · ${level.size}×${level.size}`;
+  $('level-size').textContent = `${level.size}×${level.size}`;
   loadInto(level, `L${n}`);
+  updateNav();
   queueTutorials(level, n);
 }
 
@@ -182,8 +183,9 @@ function startDaily() {
   const key = Levels.dateKey();
   app.mode = 'daily';
   app.dailyKey = key;
-  $('level-title').textContent = 'Daily Garden';
-  $('level-pack').textContent = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  $('level-title').textContent = 'Daily';
+  $('level-size').textContent = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  updateNav();
   show('game');
   $('loading').hidden = false;
   $('board').style.visibility = 'hidden';
@@ -194,7 +196,7 @@ function startDaily() {
       def = Levels.dailyDef(key);
     } catch (err) {
       console.error(err);
-      toast('Today’s garden didn’t sprout. Try again!');
+      toast('Couldn’t build today’s puzzle. Try again!');
       show('home');
       return;
     } finally {
@@ -202,7 +204,7 @@ function startDaily() {
       $('board').style.visibility = '';
     }
     const level = Levels.buildLevel(def, `D${key}`);
-    $('level-pack').textContent += ` · ${level.size}×${level.size}`;
+    $('level-size').textContent += ` · ${level.size}×${level.size}`;
     loadInto(level, `D${key}`);
     queueTutorials(level, 0);
   }, 40);
@@ -218,7 +220,8 @@ function updateHud(view) {
   $('moves').textContent = String(app.state.moves);
   $('pairs').textContent = `${st.connected}/${st.pairs}`;
   $('filled').textContent = `${st.percent}%`;
-  $('filled-bar').style.width = `${st.percent}%`;
+  const rec = app.mode === 'campaign' ? save.progress.completed[app.levelNo] : save.daily[app.dailyKey];
+  $('best').textContent = rec ? String(rec.moves) : '–';
   const left = G.MAX_HINTS - app.state.hintsUsed;
   $('hint-count').textContent = String(left);
   $('btn-hint').classList.toggle('empty', left <= 0);
@@ -233,6 +236,13 @@ function toast(msg) {
   el.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+/** Previous / next level buttons: only within the campaign, next only once it's unlocked. */
+function updateNav() {
+  const campaign = app.mode === 'campaign';
+  $('btn-prev').disabled = !campaign || app.levelNo <= 1;
+  $('btn-next-level').disabled = !campaign || app.levelNo >= Levels.TOTAL_LEVELS || !isUnlocked(app.levelNo + 1);
 }
 
 function layout() {
@@ -401,14 +411,14 @@ function doRestart() {
 function doHint() {
   if (!app.level || app.won || app.drag) return;
   if (app.state.hintsUsed >= G.MAX_HINTS) {
-    toast('The watering can is empty for this garden');
+    toast('No hints left for this level');
     return;
   }
   const solution = app.level.solution;
   if (!solution) return;
   const { state: next, color } = G.applyHint(app.level, app.state, solution);
   if (color < 0) {
-    toast('Every vine is already in the right place');
+    toast('Every pipe is already in the right place');
     return;
   }
   Sound.unlock();
@@ -440,21 +450,23 @@ function win() {
     save.daily[app.dailyKey] = { moves: state.moves, perfect };
   }
   persist();
+  updateNav();
+  updateHud(state);
 
   board.celebrate(true);
-  petals.start(level.pairs.map((_, c) => c));
+  confetti.start(level.pairs.map((_, c) => c));
   Sound.winMelody();
   if (save.settings.vibration) Sound.vibrate([20, 50, 30]);
 
   const last = app.mode === 'campaign' && app.levelNo >= Levels.TOTAL_LEVELS;
   setTimeout(() => {
     if (!app.won) return;
-    $('win-title').textContent = app.mode === 'daily' ? 'Today’s Garden in Bloom!' : 'Garden in Bloom!';
+    $('win-title').textContent = app.mode === 'daily' ? 'Daily Puzzle Complete!' : 'Level Complete!';
     $('win-detail').textContent = `Solved in ${state.moves} move${state.moves === 1 ? '' : 's'}` +
-      (state.hintsUsed ? ` · ${state.hintsUsed} watering can${state.hintsUsed === 1 ? '' : 's'}` : '');
+      (state.hintsUsed ? ` · ${state.hintsUsed} hint${state.hintsUsed === 1 ? '' : 's'}` : '');
     $('win-perfect').hidden = !perfect;
-    $('next-label').textContent = app.mode === 'daily' || last ? 'Back home' : 'Next garden';
-    if (last) $('win-detail').textContent += ' · every garden grown!';
+    $('next-label').textContent = app.mode === 'daily' || last ? 'Back home' : 'Next level';
+    if (last) $('win-detail').textContent += ' · all levels complete!';
     $('overlay-win').hidden = false;
     if (app.mode === 'campaign' && !last) startAutoAdvance();
     else $('auto-ring').style.setProperty('--p', '0%');
@@ -482,7 +494,7 @@ function stopAutoAdvance() {
 function hideWin() {
   stopAutoAdvance();
   $('overlay-win').hidden = true;
-  petals.stop();
+  confetti.stop();
   board.celebrate(false);
 }
 
@@ -522,38 +534,38 @@ function showNextTutorial() {
 }
 
 function tutorialArt(kind) {
-  const cell = (x, y, fill = '#5b4431') => `<rect x="${x * 40 + 2}" y="${y * 40 + 2}" width="36" height="36" rx="8" fill="${fill}"/>`;
-  const grid = (w, h, skip = []) => {
-    let s = '';
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (!skip.includes(`${x},${y}`)) s += cell(x, y);
-    return s;
-  };
-  const seed = (x, y, c) => `<circle cx="${x * 40 + 20}" cy="${y * 40 + 20}" r="11" fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="2"/>`;
-  const vine = (pts, c) => `<polyline points="${pts.map(([x, y]) => `${x * 40 + 20},${y * 40 + 20}`).join(' ')}" fill="none" stroke="${c}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>`;
-  const wrap = (w, h, body) => `<svg viewBox="0 0 ${w * 40} ${h * 40}" aria-hidden="true">${body}</svg>`;
+  const W = 5, H = 3, S = 40;
+  const px = (v) => v * S + S / 2;
+  const tint = (cells, c) => cells.map(([x, y]) => `<rect x="${x * S}" y="${y * S}" width="${S}" height="${S}" fill="${c}" opacity=".3"/>`).join('');
+  const pipe = (pts, c) => tint(pts, c) +
+    `<polyline points="${pts.map(([x, y]) => `${px(x)},${px(y)}`).join(' ')}" fill="none" stroke="${c}" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const dot = (x, y, c) => `<circle cx="${px(x)}" cy="${px(y)}" r="14" fill="${c}"/>`;
+  let grid = '';
+  for (let i = 0; i <= W; i++) grid += `<path d="M${i * S || 0.5} 0V${H * S}" />`;
+  for (let i = 0; i <= H; i++) grid += `<path d="M0 ${i * S || 0.5}H${W * S}" />`;
+  const wrap = (body) => `<svg viewBox="-1 -1 ${W * S + 2} ${H * S + 2}" aria-hidden="true">${body}<g stroke="#77722F" stroke-width="1.5">${grid}</g></svg>`;
+  const R = '#FF0000', B = '#0000FF', Y = '#EEEE00', C = '#00FFFF';
   if (kind === 'rocks') {
-    return wrap(5, 3, grid(5, 3) +
-      `<ellipse cx="100" cy="60" rx="16" ry="14" fill="#8d897d"/><ellipse cx="94" cy="54" rx="5" ry="3" fill="rgba(255,255,255,.3)"/>` +
-      vine([[0, 1], [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [4, 1]], '#2B4BFF') + seed(0, 1, '#2B4BFF') + seed(4, 1, '#2B4BFF') +
-      vine([[0, 2], [1, 2], [2, 2], [3, 2], [4, 2]], '#FF1F1F') + seed(0, 2, '#FF1F1F') + seed(4, 2, '#FF1F1F'));
+    return wrap(`<rect x="80" y="40" width="40" height="40" fill="#2B2B2B"/><path d="M90 50l20 20M110 50l-20 20" stroke="#555" stroke-width="3"/>` +
+      pipe([[0, 1], [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [4, 1]], B) + dot(0, 1, B) + dot(4, 1, B) +
+      pipe([[0, 2], [1, 2], [2, 2], [3, 2], [4, 2]], R) + dot(0, 2, R) + dot(4, 2, R));
   }
   if (kind === 'bridges') {
-    return wrap(5, 3, grid(5, 3) +
-      `<rect x="82" y="44" width="36" height="32" rx="4" fill="#a0744a"/><rect x="84" y="42" width="32" height="36" rx="4" fill="#7a5634" opacity=".7"/>` +
-      vine([[2, 0], [2, 1], [2, 2]], '#F5E400') + vine([[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]], '#00E5F0') +
-      seed(2, 0, '#F5E400') + seed(2, 2, '#F5E400') + seed(0, 1, '#00E5F0') + seed(4, 1, '#00E5F0'));
+    return wrap(pipe([[2, 0], [2, 1], [2, 2]], Y) +
+      `<rect x="80" y="48" width="40" height="24" fill="#3A3A3A"/>` +
+      pipe([[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]], C) +
+      dot(2, 0, Y) + dot(2, 2, Y) + dot(0, 1, C) + dot(4, 1, C));
   }
   if (kind === 'hints') {
-    return wrap(5, 3, `<g transform="translate(70 18) scale(3.4)" color="#7bcb57"><use href="#i-can"/></g>` +
-      `<g fill="#00E5F0" opacity=".8"><circle cx="160" cy="42" r="4"/><circle cx="170" cy="58" r="3.5"/><circle cx="158" cy="72" r="3"/></g>`);
+    return wrap(pipe([[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]], R) + dot(0, 0, R) + dot(4, 0, R) +
+      `<g transform="translate(80 50) scale(2.6)" color="#fff"><use href="#i-hint"/></g>`);
   }
   if (kind === 'daily') {
-    return wrap(5, 3, `<g transform="translate(70 10) scale(4)" color="#ffd66b"><use href="#i-sun"/></g>`);
+    return wrap(`<g transform="translate(70 8) scale(4.3)" color="#fff"><use href="#i-calendar"/></g>`);
   }
-  return wrap(5, 3, grid(5, 3) +
-    vine([[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]], '#FF1F1F') + seed(0, 0, '#FF1F1F') + seed(4, 0, '#FF1F1F') +
-    vine([[0, 1], [0, 2], [1, 2], [2, 2]], '#2B4BFF') + seed(0, 1, '#2B4BFF') + seed(4, 2, '#2B4BFF') +
-    `<circle cx="100" cy="100" r="15" fill="none" stroke="#fff" stroke-width="3" opacity=".7"/>`);
+  return wrap(pipe([[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]], R) + dot(0, 0, R) + dot(4, 0, R) +
+    pipe([[0, 1], [0, 2], [1, 2], [2, 2]], B) + dot(0, 1, B) + dot(4, 2, B) +
+    `<circle cx="${px(2)}" cy="${px(2)}" r="30" fill="${B}" opacity=".35"/>`);
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -598,7 +610,7 @@ $('btn-reset').addEventListener('click', (e) => {
   save.settings = settings;
   persist();
   $('overlay-settings').hidden = true;
-  toast('Progress reset. A fresh garden awaits.');
+  toast('Progress reset.');
   show('home');
 });
 
@@ -628,6 +640,18 @@ for (const b of document.querySelectorAll('[data-nav]')) b.addEventListener('cli
 $('btn-undo').addEventListener('click', doUndo);
 $('btn-restart').addEventListener('click', doRestart);
 $('btn-hint').addEventListener('click', doHint);
+$('btn-settings-game').addEventListener('click', () => { Sound.tap(); openSettings(); });
+$('btn-prev').addEventListener('click', () => {
+  if (app.mode !== 'campaign' || app.levelNo <= 1 || app.drag) return;
+  Sound.tap();
+  startLevel(app.levelNo - 1);
+});
+$('btn-next-level').addEventListener('click', () => {
+  if (app.mode !== 'campaign' || app.drag) return;
+  if (!isUnlocked(app.levelNo + 1)) { toast('Solve this level to unlock the next one'); return; }
+  Sound.tap();
+  startLevel(app.levelNo + 1);
+});
 $('btn-next').addEventListener('click', () => { Sound.tap(); next(); });
 $('btn-win-menu').addEventListener('click', () => {
   Sound.tap();

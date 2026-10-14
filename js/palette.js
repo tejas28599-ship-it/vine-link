@@ -1,23 +1,21 @@
-// Vine Link — flower palette: the classic bright, fully saturated puzzle colors, ordered so small
-// levels get the most distinct hues first. Vines are drawn in the pure color for maximum contrast.
-// Colorblind mode never relies on hue alone: every flower also gets a symbol on its seed and a
-// unique petal count + petal shape when it blooms.
+// Vine Link — pipe colors: the classic, fully saturated puzzle set, shown on a black board.
+// Ordered so small levels use the most distinct colors first. Colorblind mode adds a unique
+// symbol on every dot, so color is never the only cue.
 
 export const PALETTE = [
-  { name: 'Red', hex: '#FF1A1A', symbol: 'dot', petals: 5, shape: 'round' },
-  { name: 'Green', hex: '#00D62B', symbol: 'triangle', petals: 3, shape: 'pointed' },
-  { name: 'Blue', hex: '#2E6BFF', symbol: 'star', petals: 8, shape: 'thin' },
-  { name: 'Yellow', hex: '#FFF200', symbol: 'plus', petals: 4, shape: 'heart' },
-  { name: 'Orange', hex: '#FF9900', symbol: 'diamond', petals: 6, shape: 'round' },
-  { name: 'Cyan', hex: '#00FFFF', symbol: 'drop', petals: 5, shape: 'pointed' },
-  { name: 'Magenta', hex: '#FF1FE6', symbol: 'square', petals: 4, shape: 'round' },
-  { name: 'Pink', hex: '#FF8FC8', symbol: 'heart', petals: 6, shape: 'heart' },
-  { name: 'Purple', hex: '#B44CFF', symbol: 'ring', petals: 12, shape: 'thin' },
-  { name: 'White', hex: '#FFFFFF', symbol: 'hexagon', petals: 6, shape: 'pointed' },
-  { name: 'Gray', hex: '#C4C4C4', symbol: 'moon', petals: 7, shape: 'round' },
-  { name: 'Lime', hex: '#A6FF1A', symbol: 'bars', petals: 4, shape: 'pointed' },
+  { name: 'Red', hex: '#FF0000', symbol: 'dot' },
+  { name: 'Green', hex: '#008D00', symbol: 'triangle' },
+  { name: 'Blue', hex: '#0000FF', symbol: 'star' },
+  { name: 'Yellow', hex: '#EEEE00', symbol: 'plus' },
+  { name: 'Orange', hex: '#FF8000', symbol: 'diamond' },
+  { name: 'Cyan', hex: '#00FFFF', symbol: 'drop' },
+  { name: 'Magenta', hex: '#FF00FF', symbol: 'square' },
+  { name: 'Pink', hex: '#FF8FC8', symbol: 'heart' },
+  { name: 'Purple', hex: '#800080', symbol: 'ring' },
+  { name: 'White', hex: '#FFFFFF', symbol: 'hexagon' },
+  { name: 'Gray', hex: '#A6A6A6', symbol: 'moon' },
+  { name: 'Lime', hex: '#00FF00', symbol: 'bars' },
 ];
-
 
 export function hexToRgb(hex) {
   const n = parseInt(hex.slice(1), 16);
@@ -34,12 +32,9 @@ export function mix(a, b, t) {
 
 /** Pre-computed colors for drawing. */
 export const COLORS = PALETTE.map((p) => {
-  const flower = hexToRgb(p.hex);
+  const rgb = hexToRgb(p.hex);
   return {
-    flower,
-    vine: flower, // pure color: easy to tell apart at a glance
-    leaf: mix(flower, [255, 255, 255], 0.3), // leaves in a lighter shade of the vine's own color
-    light: mix(flower, [255, 255, 255], 0.45),
-    dark: mix(flower, [20, 14, 8], 0.45),
+    rgb,
+    light: mix(rgb, [255, 255, 255], 0.5),
   };
 });

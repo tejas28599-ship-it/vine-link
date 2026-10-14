@@ -1,5 +1,9 @@
 # Vine Link — Design Proposal
 
+> **Update:** the visuals moved from the original garden theme to a clean, high-contrast style:
+> black board, thin olive grid, solid dots, thick straight pipes and the classic bright palette
+> below. Names in the data model (`vines`, `seedColor`) are kept for code stability.
+
 A calm, mobile-first path-connecting puzzle. Plain HTML/CSS/vanilla JS (ES modules), no build
 step, hostable on GitHub Pages.
 
@@ -82,23 +86,22 @@ start, so vines cut mid-drag grow back if you pull away again.
 9. QA pass and fixes
 10. README, git, GitHub Pages
 
-## 4. Flower palette (12)
+## 4. Palette (12)
 
-The classic bright puzzle colors: fully saturated, with vines drawn in the pure color on dark soil
-so every pair is easy to see. Colorblind mode adds a unique symbol on every seed and a unique
-petal count/shape on every flower, so color is never the only cue.
+The classic bright puzzle colors on a black board. Pink replaces maroon (too close to red).
+Colorblind mode adds a unique symbol on every dot, so color is never the only cue.
 
-| # | Name    | Hex       | Symbol   | Petals      |
-|---|---------|-----------|----------|-------------|
-| 0 | Red     | `#FF1A1A` | dot      | 5 round     |
-| 1 | Green   | `#00D62B` | triangle | 3 pointed   |
-| 2 | Blue    | `#2E6BFF` | star     | 8 thin      |
-| 3 | Yellow  | `#FFF200` | plus     | 4 heart     |
-| 4 | Orange  | `#FF9900` | diamond  | 6 round     |
-| 5 | Cyan    | `#00FFFF` | drop     | 5 pointed   |
-| 6 | Magenta | `#FF1FE6` | square   | 4 round     |
-| 7 | Pink    | `#FF8FC8` | heart    | 6 heart     |
-| 8 | Purple  | `#B44CFF` | ring     | 12 thin     |
-| 9 | White   | `#FFFFFF` | hexagon  | 6 pointed   |
-| 10| Gray    | `#C4C4C4` | moon     | 7 round     |
-| 11| Lime    | `#A6FF1A` | bars     | 4 pointed   |
+| # | Name    | Hex       | Symbol   |
+|---|---------|-----------|----------|
+| 0 | Red     | `#FF0000` | dot      |
+| 1 | Green   | `#008D00` | triangle |
+| 2 | Blue    | `#0000FF` | star     |
+| 3 | Yellow  | `#EEEE00` | plus     |
+| 4 | Orange  | `#FF8000` | diamond  |
+| 5 | Cyan    | `#00FFFF` | drop     |
+| 6 | Magenta | `#FF00FF` | square   |
+| 7 | Pink    | `#FF8FC8` | heart    |
+| 8 | Purple  | `#800080` | ring     |
+| 9 | White   | `#FFFFFF` | hexagon  |
+| 10| Gray    | `#A6A6A6` | moon     |
+| 11| Lime    | `#00FF00` | bars     |

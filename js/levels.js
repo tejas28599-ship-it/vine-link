@@ -18,10 +18,10 @@ export const MAX_COLORS = 12;
 export const LEVELS_PER_PACK = 30;
 
 export const PACKS = [
-  { id: 'seedling', name: 'Seedling', sizes: [5, 6], blurb: 'Gentle 5×5 and 6×6 gardens' },
-  { id: 'sprout', name: 'Sprout', sizes: [7, 8], blurb: '7×7 and 8×8, rocks appear' },
-  { id: 'blossom', name: 'Blossom', sizes: [9, 10], blurb: '9×9 and 10×10, bridges appear' },
-  { id: 'grove', name: 'Grove', sizes: [11, 12], blurb: 'Sprawling 11×11 and 12×12 groves' },
+  { id: 'starter', name: 'Starter', sizes: [5, 6], blurb: '5×5 and 6×6: learn the ropes' },
+  { id: 'classic', name: 'Classic', sizes: [7, 8], blurb: '7×7 and 8×8: blocked cells appear' },
+  { id: 'advanced', name: 'Advanced', sizes: [9, 10], blurb: '9×9 and 10×10: bridges appear' },
+  { id: 'expert', name: 'Expert', sizes: [11, 12], blurb: '11×11 and 12×12: long, winding pipes' },
 ];
 export const TOTAL_LEVELS = PACKS.length * LEVELS_PER_PACK;
 
