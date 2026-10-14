@@ -1,4 +1,4 @@
-// Vine Link — canvas renderer. Clean, high-contrast look: black board, thin grid, solid dots,
+// Vine Link — canvas renderer. Clean, high-contrast look: near-black board, thin grid, solid dots,
 // thick straight pipes with rounded ends, and filled cells tinted in their pipe's color.
 //
 // Performance: no shadows or blur, the rAF loop only runs while something moves, and the device
@@ -8,7 +8,8 @@ import { COLORS, PALETTE, rgba } from './palette.js';
 import { ROCK, BRIDGE, isComplete } from './game.js';
 
 const TAU = Math.PI * 2;
-const GRID = '#77722F';
+const BOARD = '#07080F';
+const GRID = '#363C6E';
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const luminance = ([r, g, b]) => (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
 
@@ -215,16 +216,16 @@ export class BoardRenderer {
     const cs = g.cell;
     const n = this.n;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.fillStyle = '#000';
+    ctx.fillStyle = BOARD;
     ctx.fillRect(0, 0, this.cssSize, this.cssSize);
 
     // cells: blocked tiles and color tint on filled cells
     for (let cell = 0; cell < level.cellCount; cell++) {
       const x = g.x + (cell % n) * cs, y = g.y + Math.floor(cell / n) * cs;
       if (level.kind[cell] === ROCK) {
-        ctx.fillStyle = '#2B2B2B';
+        ctx.fillStyle = '#1C1F3D';
         ctx.fillRect(x, y, cs, cs);
-        ctx.strokeStyle = '#444';
+        ctx.strokeStyle = '#4A5090';
         ctx.lineWidth = Math.max(1, cs * 0.05);
         ctx.beginPath();
         ctx.moveTo(x + cs * 0.25, y + cs * 0.25);
@@ -352,7 +353,7 @@ export class BoardRenderer {
       ctx.beginPath();
       ctx.rect(x + 0.5, y + 0.5, cs - 1, cs - 1);
       ctx.clip();
-      ctx.fillStyle = '#000';
+      ctx.fillStyle = BOARD;
       ctx.fillRect(x, y, cs, cs);
       for (const c of lanes.v) {
         ctx.save();
@@ -364,9 +365,9 @@ export class BoardRenderer {
         ctx.restore();
       }
       // the deck
-      ctx.fillStyle = '#3A3A3A';
+      ctx.fillStyle = '#2A2F5E';
       ctx.fillRect(x, cy - band, cs, band * 2);
-      ctx.fillStyle = '#9A9A9A';
+      ctx.fillStyle = '#8C93D6';
       ctx.fillRect(x, cy - band, cs, Math.max(1, cs * 0.04));
       ctx.fillRect(x, cy + band - Math.max(1, cs * 0.04), cs, Math.max(1, cs * 0.04));
       for (const c of lanes.h) this.strokePts(lines[c], width, rgba(COLORS[c].rgb));
@@ -401,7 +402,7 @@ export class BoardRenderer {
     m.beginPath();
     m.arc(W / 2, H / 2, W / 2 - 2 * dpr, 0, TAU);
     m.clip();
-    m.fillStyle = '#000';
+    m.fillStyle = BOARD;
     m.fillRect(0, 0, W, H);
     m.drawImage(canvas, sx, sy, sw, sh, 0, 0, W, H);
     m.restore();

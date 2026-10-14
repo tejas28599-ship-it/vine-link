@@ -174,8 +174,8 @@ function startLevel(n) {
   persist();
   $('level-title').textContent = `Level ${n}`;
   $('level-size').textContent = `${level.size}×${level.size}`;
+  $('level-pack').textContent = Levels.PACKS[Levels.packOf(n)].name;
   loadInto(level, `L${n}`);
-  updateNav();
   queueTutorials(level, n);
 }
 
@@ -183,9 +183,9 @@ function startDaily() {
   const key = Levels.dateKey();
   app.mode = 'daily';
   app.dailyKey = key;
-  $('level-title').textContent = 'Daily';
-  $('level-size').textContent = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-  updateNav();
+  $('level-title').textContent = 'Daily Puzzle';
+  $('level-size').textContent = '';
+  $('level-pack').textContent = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
   show('game');
   $('loading').hidden = false;
   $('board').style.visibility = 'hidden';
@@ -204,7 +204,7 @@ function startDaily() {
       $('board').style.visibility = '';
     }
     const level = Levels.buildLevel(def, `D${key}`);
-    $('level-size').textContent += ` · ${level.size}×${level.size}`;
+    $('level-size').textContent = `${level.size}×${level.size}`;
     loadInto(level, `D${key}`);
     queueTutorials(level, 0);
   }, 40);
@@ -220,6 +220,7 @@ function updateHud(view) {
   $('moves').textContent = String(app.state.moves);
   $('pairs').textContent = `${st.connected}/${st.pairs}`;
   $('filled').textContent = `${st.percent}%`;
+  $('filled-bar').style.width = `${st.percent}%`;
   const rec = app.mode === 'campaign' ? save.progress.completed[app.levelNo] : save.daily[app.dailyKey];
   $('best').textContent = rec ? String(rec.moves) : '–';
   const left = G.MAX_HINTS - app.state.hintsUsed;
@@ -236,13 +237,6 @@ function toast(msg) {
   el.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
-}
-
-/** Previous / next level buttons: only within the campaign, next only once it's unlocked. */
-function updateNav() {
-  const campaign = app.mode === 'campaign';
-  $('btn-prev').disabled = !campaign || app.levelNo <= 1;
-  $('btn-next-level').disabled = !campaign || app.levelNo >= Levels.TOTAL_LEVELS || !isUnlocked(app.levelNo + 1);
 }
 
 function layout() {
@@ -450,7 +444,6 @@ function win() {
     save.daily[app.dailyKey] = { moves: state.moves, perfect };
   }
   persist();
-  updateNav();
   updateHud(state);
 
   board.celebrate(true);
@@ -543,16 +536,16 @@ function tutorialArt(kind) {
   let grid = '';
   for (let i = 0; i <= W; i++) grid += `<path d="M${i * S || 0.5} 0V${H * S}" />`;
   for (let i = 0; i <= H; i++) grid += `<path d="M0 ${i * S || 0.5}H${W * S}" />`;
-  const wrap = (body) => `<svg viewBox="-1 -1 ${W * S + 2} ${H * S + 2}" aria-hidden="true">${body}<g stroke="#77722F" stroke-width="1.5">${grid}</g></svg>`;
+  const wrap = (body) => `<svg viewBox="-1 -1 ${W * S + 2} ${H * S + 2}" aria-hidden="true">${body}<g stroke="#363C6E" stroke-width="1.5">${grid}</g></svg>`;
   const R = '#FF0000', B = '#0000FF', Y = '#EEEE00', C = '#00FFFF';
   if (kind === 'rocks') {
-    return wrap(`<rect x="80" y="40" width="40" height="40" fill="#2B2B2B"/><path d="M90 50l20 20M110 50l-20 20" stroke="#555" stroke-width="3"/>` +
+    return wrap(`<rect x="80" y="40" width="40" height="40" fill="#1C1F3D"/><path d="M90 50l20 20M110 50l-20 20" stroke="#4A5090" stroke-width="3"/>` +
       pipe([[0, 1], [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [4, 1]], B) + dot(0, 1, B) + dot(4, 1, B) +
       pipe([[0, 2], [1, 2], [2, 2], [3, 2], [4, 2]], R) + dot(0, 2, R) + dot(4, 2, R));
   }
   if (kind === 'bridges') {
     return wrap(pipe([[2, 0], [2, 1], [2, 2]], Y) +
-      `<rect x="80" y="48" width="40" height="24" fill="#3A3A3A"/>` +
+      `<rect x="80" y="48" width="40" height="24" fill="#2A2F5E"/>` +
       pipe([[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]], C) +
       dot(2, 0, Y) + dot(2, 2, Y) + dot(0, 1, C) + dot(4, 1, C));
   }
@@ -640,18 +633,6 @@ for (const b of document.querySelectorAll('[data-nav]')) b.addEventListener('cli
 $('btn-undo').addEventListener('click', doUndo);
 $('btn-restart').addEventListener('click', doRestart);
 $('btn-hint').addEventListener('click', doHint);
-$('btn-settings-game').addEventListener('click', () => { Sound.tap(); openSettings(); });
-$('btn-prev').addEventListener('click', () => {
-  if (app.mode !== 'campaign' || app.levelNo <= 1 || app.drag) return;
-  Sound.tap();
-  startLevel(app.levelNo - 1);
-});
-$('btn-next-level').addEventListener('click', () => {
-  if (app.mode !== 'campaign' || app.drag) return;
-  if (!isUnlocked(app.levelNo + 1)) { toast('Solve this level to unlock the next one'); return; }
-  Sound.tap();
-  startLevel(app.levelNo + 1);
-});
 $('btn-next').addEventListener('click', () => { Sound.tap(); next(); });
 $('btn-win-menu').addEventListener('click', () => {
   Sound.tap();

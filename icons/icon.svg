@@ -1,7 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-<rect width="512" height="512" rx="112" fill="#000"/>
+<defs><radialGradient id="bg" cx="50%" cy="8%" r="100%"><stop offset="0" stop-color="#3b3f9e"/><stop offset="1" stop-color="#10112e"/></radialGradient></defs>
+<rect width="512" height="512" rx="112" fill="url(#bg)"/>
+<rect x="96" y="96" width="320" height="320" fill="#07080f"/>
 <rect x="96.0" y="96.0" width="106.7" height="106.7" fill="rgb(255,0,0)" opacity=".3"/><rect x="202.7" y="96.0" width="106.7" height="106.7" fill="rgb(255,0,0)" opacity=".3"/><rect x="309.3" y="96.0" width="106.7" height="106.7" fill="rgb(255,0,0)" opacity=".3"/><rect x="309.3" y="202.7" width="106.7" height="106.7" fill="rgb(255,0,0)" opacity=".3"/><rect x="96.0" y="202.7" width="106.7" height="106.7" fill="rgb(0,0,255)" opacity=".3"/><rect x="96.0" y="309.3" width="106.7" height="106.7" fill="rgb(0,0,255)" opacity=".3"/><rect x="202.7" y="309.3" width="106.7" height="106.7" fill="rgb(0,0,255)" opacity=".3"/><rect x="309.3" y="309.3" width="106.7" height="106.7" fill="rgb(0,0,255)" opacity=".3"/>
-<path d="M96.0 96V416M96 96.0H416M202.7 96V416M96 202.7H416M309.3 96V416M96 309.3H416M416.0 96V416M96 416.0H416" stroke="rgb(119,114,47)" stroke-width="5"/>
+<path d="M96.0 96V416M96 96.0H416M202.7 96V416M96 202.7H416M309.3 96V416M96 309.3H416M416.0 96V416M96 416.0H416" stroke="rgb(54,60,110)" stroke-width="5"/>
 <polyline points="149.3,149.3 256.0,149.3 362.7,149.3 362.7,256.0" fill="none" stroke="rgb(255,0,0)" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/><circle cx="149.3" cy="149.3" r="36" fill="rgb(255,0,0)"/><circle cx="362.7" cy="256.0" r="36" fill="rgb(255,0,0)"/>
 <polyline points="149.3,256.0 149.3,362.7 256.0,362.7 362.7,362.7" fill="none" stroke="rgb(0,0,255)" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/><circle cx="149.3" cy="256.0" r="36" fill="rgb(0,0,255)"/><circle cx="362.7" cy="362.7" r="36" fill="rgb(0,0,255)"/>
 </svg>

@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Vine Link</title>
   <meta name="description" content="Connect matching colored dots with pipes. Pipes can't cross, and every cell must be filled.">
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" content="#1a1d4a">
   <meta name="color-scheme" content="dark">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Vine Link">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
   <link rel="manifest" href="manifest.json">
@@ -22,11 +22,10 @@
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
-      <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-      <symbol id="i-next" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
       <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7H5V3M5.4 7.1A8 8 0 1 1 4.3 15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-      <symbol id="i-restart" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 8.5A7.5 7.5 0 0 0 5.2 9"/><path d="M19 4v4.5h-4.5"/><path d="M5 15.5A7.5 7.5 0 0 0 18.8 15"/><path d="M5 20v-4.5h4.5"/></g></symbol>
-      <symbol id="i-hint" viewBox="0 0 24 24"><path d="M8.6 9a3.5 3.5 0 1 1 5.1 3.1c-1 .5-1.7 1.3-1.7 2.4v.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/></symbol>
+      <symbol id="i-restart" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+      <symbol id="i-hint" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17.5h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2V16h5v-.2c.1-.8.5-1.5 1.1-2A6 6 0 0 0 12 3z"/></g></symbol>
       <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="3.6" stroke-dasharray="3.2 3.08"/><circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/></symbol>
       <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2.2"/></symbol>
       <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="currentColor"/></symbol>
@@ -38,10 +37,10 @@
   <div id="app">
     <!-- Home -------------------------------------------------------------------------------->
     <section id="screen-home" class="screen active" aria-label="Home">
-      <button class="round-btn corner" id="btn-settings" aria-label="Settings"><svg><use href="#i-gear"/></svg></button>
+      <button class="icon-btn corner" id="btn-settings" aria-label="Settings"><svg><use href="#i-gear"/></svg></button>
       <div class="home-hero">
         <svg class="hero-art" viewBox="0 0 200 120" aria-hidden="true">
-          <g stroke="#77722F" stroke-width="1">
+          <rect width="200" height="120" fill="#07080f"/><g stroke="#3a3f66" stroke-width="1">
             <path d="M0 .5h200M0 40h200M0 80h200M0 119.5h200M.5 0v120M40 0v120M80 0v120M120 0v120M160 0v120M199.5 0v120"/>
           </g>
           <rect x="1" y="1" width="39" height="39" fill="#FF0000" opacity=".3"/><rect x="40" y="1" width="40" height="39" fill="#FF0000" opacity=".3"/><rect x="80" y="1" width="40" height="39" fill="#FF0000" opacity=".3"/><rect x="80" y="40" width="40" height="40" fill="#FF0000" opacity=".3"/>
@@ -75,7 +74,7 @@
     <!-- Level select ------------------------------------------------------------------------>
     <section id="screen-levels" class="screen" aria-label="Choose a level">
       <header class="bar">
-        <button class="round-btn" data-nav="home" aria-label="Back"><svg><use href="#i-back"/></svg></button>
+        <button class="icon-btn" data-nav="home" aria-label="Back"><svg><use href="#i-back"/></svg></button>
         <h2>Levels</h2>
         <span class="bar-spacer"></span>
       </header>
@@ -87,26 +86,25 @@
     <!-- Game -------------------------------------------------------------------------------->
     <section id="screen-game" class="screen" aria-label="Puzzle">
       <header class="bar topbar">
-        <button class="round-btn" id="btn-back" aria-label="Back to menu"><svg><use href="#i-back"/></svg></button>
-        <h2 class="level-title"><span id="level-title">Level 1</span> <span class="level-size" id="level-size">5×5</span></h2>
-        <button class="round-btn small" id="btn-settings-game" aria-label="Settings"><svg><use href="#i-gear"/></svg></button>
+        <button class="icon-btn" id="btn-back" aria-label="Back to menu"><svg><use href="#i-back"/></svg></button>
+        <div class="level-info">
+          <div class="level-title"><span id="level-title">Level 1</span> <span class="level-size" id="level-size">5×5</span></div>
+          <div class="level-sub"><span id="level-pack">Starter</span> · Moves <b id="moves">0</b> · Best <b id="best">–</b></div>
+        </div>
+        <button class="icon-btn" id="btn-undo" aria-label="Undo"><svg><use href="#i-undo"/></svg></button>
+        <button class="icon-btn" id="btn-restart" aria-label="Restart"><svg><use href="#i-restart"/></svg></button>
+        <button class="icon-btn hint" id="btn-hint" aria-label="Hint"><svg><use href="#i-hint"/></svg><span class="badge" id="hint-count">3</span></button>
       </header>
-      <div class="info" aria-live="polite">
-        <span>pairs: <b id="pairs">0/0</b></span>
-        <span>moves: <b id="moves">0</b></span>
-        <span>best: <b id="best">–</b></span>
-        <span>filled: <b id="filled">0%</b></span>
-      </div>
       <main class="board-wrap" id="board-wrap">
         <canvas id="board" aria-label="Puzzle grid" role="img"></canvas>
         <div class="loading" id="loading" hidden><span class="spinner"></span>Building today's puzzle…</div>
       </main>
-      <footer class="toolbar">
-        <button class="round-btn" id="btn-undo" aria-label="Undo"><svg><use href="#i-undo"/></svg></button>
-        <button class="round-btn" id="btn-prev" aria-label="Previous level"><svg><use href="#i-back"/></svg></button>
-        <button class="round-btn" id="btn-restart" aria-label="Restart"><svg><use href="#i-restart"/></svg></button>
-        <button class="round-btn" id="btn-next-level" aria-label="Next level"><svg><use href="#i-next"/></svg></button>
-        <button class="hint-btn" id="btn-hint" aria-label="Hint"><span id="hint-count">3</span> ×<span class="round-btn" aria-hidden="true"><svg><use href="#i-hint"/></svg></span></button>
+      <footer class="bar bottombar">
+        <div class="stat"><span class="stat-label">Pairs connected</span><span class="stat-value" id="pairs">0/0</span></div>
+        <div class="stat grow">
+          <span class="stat-label">Filled <b id="filled">0%</b></span>
+          <div class="meter"><div class="meter-fill" id="filled-bar"></div></div>
+        </div>
       </footer>
     </section>
   </div>
