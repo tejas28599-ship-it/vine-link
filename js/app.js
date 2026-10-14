@@ -58,7 +58,7 @@ const app = {
   pack: 0,
 };
 
-const board = new BoardRenderer($('board'), $('magnifier'));
+const board = new BoardRenderer($('board'));
 const confetti = new Confetti($('confetti'));
 board.setColorblind(save.settings.colorblind);
 Sound.setEnabled(save.settings.sound);

@@ -391,20 +391,8 @@ svg { width: 22px; height: 22px; flex: none; }
 .tut-art { display: grid; place-items: center; }
 .tut-art svg { width: 200px; height: 120px; border-radius: 8px; background: #fff; }
 
-/* ---------- magnifier, confetti, toast ---------- */
+/* ---------- confetti, toast ---------- */
 
-#magnifier {
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 15;
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  transition: opacity 0.12s ease;
-}
-#magnifier.show { opacity: 1; }
 
 #confetti { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 21; pointer-events: none; display: none; }
 #confetti.show { display: block; }

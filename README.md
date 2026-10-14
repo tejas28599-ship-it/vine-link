@@ -82,7 +82,7 @@ css/style.css       theme + responsive layout (safe areas, 360px phones → tabl
 js/game.js          pure rules: lane graph, pipes, cutting, undo, win check, hints
 js/solver.js        backtracking solver (counts solutions → uniqueness)
 js/levels.js        seeded RNG, generator, packs, difficulty curve, Daily Puzzle
-js/render.js        canvas renderer: grid, pipes, dots, tinted cells, magnifier, confetti
+js/render.js        canvas renderer: white board, outlined pipes, glossy dots, tinted cells, confetti
 js/input.js         pointer input, single-finger, supercover swipe traversal
 js/audio.js         Web Audio synthesized sound effects
 js/storage.js       localStorage (every access wrapped in try/catch)

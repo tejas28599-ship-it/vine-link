@@ -20,11 +20,9 @@ const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const luminance = ([r, g, b]) => (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
 
 export class BoardRenderer {
-  constructor(canvas, magnifier) {
+  constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
-    this.mag = magnifier;
-    this.magCtx = magnifier ? magnifier.getContext('2d') : null;
     this.level = null;
     this.cssSize = 0;
     this.dpr = 1;
@@ -74,13 +72,6 @@ export class BoardRenderer {
     this.canvas.style.height = `${cssSize}px`;
     this.canvas.width = Math.round(cssSize * dpr);
     this.canvas.height = Math.round(cssSize * dpr);
-    if (this.mag) {
-      const m = 116;
-      this.mag.width = Math.round(m * dpr);
-      this.mag.height = Math.round(m * dpr);
-      this.mag.style.width = `${m}px`;
-      this.mag.style.height = `${m}px`;
-    }
     if (this.level) this.buildStatic();
     this.request();
   }
@@ -209,7 +200,6 @@ export class BoardRenderer {
 
   setPointer(p) {
     this.pointer = p;
-    if (!p && this.mag) this.mag.classList.remove('show');
     this.request();
   }
 
@@ -232,7 +222,6 @@ export class BoardRenderer {
     this.lastT = now;
     const busy = this.step(dt, now) || this.celebrating || !!this.pointer;
     this.draw(now);
-    if (this.pointer) this.drawMagnifier();
     if (busy) this.request();
     else this.lastT = 0;
   }
@@ -432,44 +421,6 @@ export class BoardRenderer {
       const ink = luminance(col) > 0.5 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.95)';
       drawSymbol(ctx, PALETTE[c].symbol, x, y, r * 0.62, ink);
     }
-  }
-
-  drawMagnifier() {
-    const { mag, magCtx: m, pointer, canvas, dpr } = this;
-    if (!mag || !pointer) return;
-    const W = mag.width, H = mag.height;
-    const zoom = 1.7;
-    const sw = W / zoom, sh = H / zoom;
-    const sx = pointer.px * dpr - sw / 2, sy = pointer.py * dpr - sh / 2;
-    m.setTransform(1, 0, 0, 1, 0, 0);
-    m.clearRect(0, 0, W, H);
-    m.save();
-    m.beginPath();
-    m.arc(W / 2, H / 2, W / 2 - 2 * dpr, 0, TAU);
-    m.clip();
-    m.fillStyle = BOARD;
-    m.fillRect(0, 0, W, H);
-    m.drawImage(canvas, sx, sy, sw, sh, 0, 0, W, H);
-    m.restore();
-    m.strokeStyle = 'rgba(60,66,130,0.9)';
-    m.lineWidth = 2.5 * dpr;
-    m.beginPath();
-    m.arc(W / 2, H / 2, W / 2 - 2 * dpr, 0, TAU);
-    m.stroke();
-
-    // above the finger, flipped sideways near the top of the screen
-    const rect = canvas.getBoundingClientRect();
-    const vx = rect.left + pointer.px, vy = rect.top + pointer.py;
-    const size = W / dpr;
-    let left = vx - size / 2;
-    let top = vy - size - 46;
-    if (top < 6) {
-      top = clamp(vy - size / 2, 6, window.innerHeight - size - 6);
-      left = vx > window.innerWidth / 2 ? vx - size - 46 : vx + 46;
-    }
-    left = clamp(left, 6, window.innerWidth - size - 6);
-    mag.style.transform = `translate(${left}px, ${top}px)`;
-    mag.classList.add('show');
   }
 }
 
