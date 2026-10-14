@@ -1,5 +1,6 @@
-// Vine Link — canvas renderer. Clean, high-contrast look: near-black board, thin grid, solid dots,
-// thick straight pipes with rounded ends, and filled cells tinted in their pipe's color.
+// Vine Link — canvas renderer. A bright game board: white raised tiles on a lavender frame,
+// thick straight pipes with a darker edge, glossy dots, and filled tiles tinted in their pipe's
+// color. The static tiles are drawn once into an offscreen canvas and blitted every frame.
 //
 // Performance: no shadows or blur, the rAF loop only runs while something moves, and the device
 // pixel ratio is capped at 2.
@@ -8,8 +9,23 @@ import { COLORS, PALETTE, rgba } from './palette.js';
 import { ROCK, BRIDGE, isComplete } from './game.js';
 
 const TAU = Math.PI * 2;
-const BOARD = '#07080F';
-const GRID = '#363C6E';
+const FRAME = '#CDD3F2'; // gaps between tiles + board border
+const TILE = '#FFFFFF';
+const TILE_SHADE = '#B7BEE3'; // the tile's bottom edge, for a raised look
+const ROCK_TILE = '#4B5170';
+const ROCK_MARK = '#8C94C2';
+const DECK = '#AEB5DC';
+const RAIL = '#7C85BC';
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const luminance = ([r, g, b]) => (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
 
@@ -49,6 +65,7 @@ export class BoardRenderer {
     this.celebrating = false;
     this.active = null;
     this.pointer = null;
+    if (this.cssSize) this.buildStatic();
     if (state) this.setState(state, { instant: true });
     this.request();
   }
@@ -74,12 +91,13 @@ export class BoardRenderer {
       this.mag.style.width = `${m}px`;
       this.mag.style.height = `${m}px`;
     }
+    if (this.level) this.buildStatic();
     this.request();
   }
 
   /** Board geometry in CSS pixels (used by input). */
   geom() {
-    const pad = 1;
+    const pad = Math.max(3, Math.round(this.cssSize * 0.02));
     const cell = (this.cssSize - pad * 2) / (this.n || 1);
     return { x: pad, y: pad, cell, size: this.n || 1 };
   }
@@ -88,6 +106,54 @@ export class BoardRenderer {
     const g = this.geom();
     const r = Math.floor(cell / this.n), c = cell % this.n;
     return [g.x + (c + 0.5) * g.cell, g.y + (r + 0.5) * g.cell];
+  }
+
+  /** Tile rectangle for a cell (CSS px): [x, y, w, h, radius]. */
+  tileRect(cell) {
+    const g = this.geom();
+    const cs = g.cell;
+    const inset = Math.max(1, cs * 0.045);
+    return [g.x + (cell % this.n) * cs + inset, g.y + Math.floor(cell / this.n) * cs + inset, cs - inset * 2, cs - inset * 2, cs * 0.16];
+  }
+
+  /** Frame, tiles and blocked cells never change during a level: draw them once. */
+  buildStatic() {
+    const { level, dpr } = this;
+    const S = Math.round(this.cssSize * dpr);
+    const bg = document.createElement('canvas');
+    bg.width = S;
+    bg.height = S;
+    const ctx = bg.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = FRAME;
+    ctx.fillRect(0, 0, this.cssSize, this.cssSize);
+    const cs = this.geom().cell;
+    for (let cell = 0; cell < level.cellCount; cell++) {
+      const [x, y, w, h, r] = this.tileRect(cell);
+      if (level.kind[cell] === ROCK) {
+        ctx.fillStyle = ROCK_TILE;
+        roundRect(ctx, x, y, w, h, r);
+        ctx.fill();
+        ctx.strokeStyle = ROCK_MARK;
+        ctx.lineWidth = Math.max(1.5, cs * 0.07);
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(x + w * 0.3, y + h * 0.3);
+        ctx.lineTo(x + w * 0.7, y + h * 0.7);
+        ctx.moveTo(x + w * 0.7, y + h * 0.3);
+        ctx.lineTo(x + w * 0.3, y + h * 0.7);
+        ctx.stroke();
+        continue;
+      }
+      const lip = Math.max(1, cs * 0.05);
+      ctx.fillStyle = TILE_SHADE;
+      roundRect(ctx, x, y + lip, w, h - lip, r);
+      ctx.fill();
+      ctx.fillStyle = TILE;
+      roundRect(ctx, x, y, w, h - lip, r);
+      ctx.fill();
+    }
+    this.bg = bg;
   }
 
   // ------------------------------------------------------------------------------------------
@@ -215,39 +281,26 @@ export class BoardRenderer {
     const g = this.geom();
     const cs = g.cell;
     const n = this.n;
+    if (!this.bg) this.buildStatic();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    ctx.drawImage(this.bg, 0, 0);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.fillStyle = BOARD;
-    ctx.fillRect(0, 0, this.cssSize, this.cssSize);
 
-    // cells: blocked tiles and color tint on filled cells
+    // filled tiles take on a soft tint of their pipe's color
     for (let cell = 0; cell < level.cellCount; cell++) {
-      const x = g.x + (cell % n) * cs, y = g.y + Math.floor(cell / n) * cs;
-      if (level.kind[cell] === ROCK) {
-        ctx.fillStyle = '#1C1F3D';
-        ctx.fillRect(x, y, cs, cs);
-        ctx.strokeStyle = '#4A5090';
-        ctx.lineWidth = Math.max(1, cs * 0.05);
-        ctx.beginPath();
-        ctx.moveTo(x + cs * 0.25, y + cs * 0.25);
-        ctx.lineTo(x + cs * 0.75, y + cs * 0.75);
-        ctx.moveTo(x + cs * 0.75, y + cs * 0.25);
-        ctx.lineTo(x + cs * 0.25, y + cs * 0.75);
-        ctx.stroke();
-        continue;
-      }
       const a = this.cover[cell];
       const col = this.coverColor[cell];
-      if (a > 0.01 && col >= 0) {
-        ctx.fillStyle = rgba(COLORS[col].rgb, 0.3 * a);
-        ctx.fillRect(x, y, cs, cs);
-      }
+      if (a <= 0.01 || col < 0 || level.kind[cell] !== 0) continue;
+      const [x, y, w, h, r] = this.tileRect(cell);
+      ctx.fillStyle = rgba(COLORS[col].rgb, 0.26 * a);
+      roundRect(ctx, x, y, w, h, r);
+      ctx.fill();
     }
-
-    this.drawGrid(g);
 
     // the finger: a big translucent circle in the active color
     if (this.active && this.pointer) {
-      ctx.fillStyle = rgba(COLORS[this.active.color].rgb, 0.35);
+      ctx.fillStyle = rgba(COLORS[this.active.color].rgb, 0.28);
       ctx.beginPath();
       ctx.arc(this.pointer.px, this.pointer.py, cs * 0.75, 0, TAU);
       ctx.fill();
@@ -259,7 +312,7 @@ export class BoardRenderer {
     ctx.lineJoin = 'round';
     const lines = this.display.map((d) => this.pipePoints(d));
     lines.forEach((pts, c) => {
-      if (pts) this.strokePts(pts, width, rgba(COLORS[c].rgb));
+      if (pts) this.strokePipe(pts, c, width);
     });
     if (level.bridges.length) this.drawBridges(lines, g, width);
 
@@ -289,23 +342,6 @@ export class BoardRenderer {
     }
   }
 
-  drawGrid(g) {
-    const { ctx, n } = this;
-    const cs = g.cell;
-    const end = g.x + n * cs;
-    ctx.strokeStyle = GRID;
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let i = 0; i <= n; i++) {
-      const p = Math.round((g.x + i * cs) * this.dpr) / this.dpr + 0.5 / this.dpr;
-      ctx.moveTo(p, g.y);
-      ctx.lineTo(p, end);
-      ctx.moveTo(g.x, p);
-      ctx.lineTo(end, p);
-    }
-    ctx.stroke();
-  }
-
   /** Points of a pipe's centerline, with the last segment cut to the animated length. */
   pipePoints(d) {
     const L = d.path.length;
@@ -333,6 +369,12 @@ export class BoardRenderer {
     ctx.stroke();
   }
 
+  /** A pipe with a darker edge, so light colors (yellow, cyan, lime) read on white tiles. */
+  strokePipe(pts, c, width) {
+    this.strokePts(pts, width + Math.max(2, width * 0.22), rgba(COLORS[c].edge));
+    this.strokePts(pts, width, rgba(COLORS[c].rgb));
+  }
+
   /** Bridges: the vertical pipe passes under a small deck, the horizontal pipe runs over it. */
   drawBridges(lines, g, width) {
     const { ctx, level } = this;
@@ -353,24 +395,26 @@ export class BoardRenderer {
       ctx.beginPath();
       ctx.rect(x + 0.5, y + 0.5, cs - 1, cs - 1);
       ctx.clip();
-      ctx.fillStyle = BOARD;
-      ctx.fillRect(x, y, cs, cs);
+      // restore the bare tile, then layer: vertical pipe (outside the deck) → deck → horizontal pipe
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.drawImage(this.bg, x * this.dpr, y * this.dpr, cs * this.dpr, cs * this.dpr, x * this.dpr, y * this.dpr, cs * this.dpr, cs * this.dpr);
+      ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
       for (const c of lanes.v) {
         ctx.save();
         ctx.beginPath();
         ctx.rect(x, y, cs, cy - band - y);
         ctx.rect(x, cy + band, cs, y + cs - cy - band);
         ctx.clip();
-        this.strokePts(lines[c], width, rgba(COLORS[c].rgb));
+        this.strokePipe(lines[c], c, width);
         ctx.restore();
       }
       // the deck
-      ctx.fillStyle = '#2A2F5E';
+      ctx.fillStyle = DECK;
       ctx.fillRect(x, cy - band, cs, band * 2);
-      ctx.fillStyle = '#8C93D6';
+      ctx.fillStyle = RAIL;
       ctx.fillRect(x, cy - band, cs, Math.max(1, cs * 0.04));
       ctx.fillRect(x, cy + band - Math.max(1, cs * 0.04), cs, Math.max(1, cs * 0.04));
-      for (const c of lanes.h) this.strokePts(lines[c], width, rgba(COLORS[c].rgb));
+      for (const c of lanes.h) this.strokePipe(lines[c], c, width);
       ctx.restore();
     }
   }
@@ -379,9 +423,18 @@ export class BoardRenderer {
     const { ctx } = this;
     const [x, y] = this.center(cell);
     const col = COLORS[c].rgb;
-    ctx.fillStyle = rgba(col);
+    ctx.fillStyle = rgba(COLORS[c].edge);
     ctx.beginPath();
     ctx.arc(x, y, r, 0, TAU);
+    ctx.fill();
+    ctx.fillStyle = rgba(col);
+    ctx.beginPath();
+    ctx.arc(x, y, r * 0.86, 0, TAU);
+    ctx.fill();
+    // glossy highlight
+    ctx.fillStyle = 'rgba(255,255,255,0.38)';
+    ctx.beginPath();
+    ctx.ellipse(x - r * 0.28, y - r * 0.34, r * 0.34, r * 0.2, -0.5, 0, TAU);
     ctx.fill();
     if (this.colorblind) {
       const ink = luminance(col) > 0.5 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.95)';
@@ -402,11 +455,11 @@ export class BoardRenderer {
     m.beginPath();
     m.arc(W / 2, H / 2, W / 2 - 2 * dpr, 0, TAU);
     m.clip();
-    m.fillStyle = BOARD;
+    m.fillStyle = FRAME;
     m.fillRect(0, 0, W, H);
     m.drawImage(canvas, sx, sy, sw, sh, 0, 0, W, H);
     m.restore();
-    m.strokeStyle = 'rgba(255,255,255,0.9)';
+    m.strokeStyle = 'rgba(60,66,130,0.9)';
     m.lineWidth = 2.5 * dpr;
     m.beginPath();
     m.arc(W / 2, H / 2, W / 2 - 2 * dpr, 0, TAU);

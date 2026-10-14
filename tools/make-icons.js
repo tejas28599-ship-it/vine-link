@@ -14,7 +14,7 @@ mkdirSync(OUT, { recursive: true });
 
 // ---- design in a 512×512 space -------------------------------------------------------------
 // A black tile with an olive grid, two bright pipes with round ends, and their cells tinted.
-const GRID = [54, 60, 110];
+const GRID = [205, 211, 242];
 const RED = [255, 0, 0], BLUE = [0, 0, 255];
 const ORIGIN = 96, CELL = 320 / 3; // 3×3 grid inside the tile
 const at = (c, r) => [ORIGIN + (c + 0.5) * CELL, ORIGIN + (r + 0.5) * CELL];
@@ -42,9 +42,9 @@ function sample(x, y, { full }) {
   let col = [16 + 43 * glow, 17 + 46 * glow, 46 + 112 * glow];
   const inGrid = x >= ORIGIN && y >= ORIGIN && x <= ORIGIN + 3 * CELL && y <= ORIGIN + 3 * CELL;
   if (inGrid) {
-    col = [7, 8, 15];
+    col = [255, 255, 255];
     const c = Math.min(2, Math.floor((x - ORIGIN) / CELL)), rr = Math.min(2, Math.floor((y - ORIGIN) / CELL));
-    for (const p of PIPES) if (p.cells.some(([pc, pr]) => pc === c && pr === rr)) col = p.color.map((v) => v * 0.3);
+    for (const p of PIPES) if (p.cells.some(([pc, pr]) => pc === c && pr === rr)) col = p.color.map((v) => 255 - (255 - v) * 0.26);
     const gx = (x - ORIGIN) / CELL, gy = (y - ORIGIN) / CELL;
     const near = (v) => Math.abs(v - Math.round(v)) * CELL < 2.5;
     if (near(gx) || near(gy)) col = GRID;
@@ -144,7 +144,7 @@ for (let i = 0; i <= 3; i++) {
   lines.push(`M${p} ${ORIGIN}V${ORIGIN + 320}`, `M${ORIGIN} ${p}H${ORIGIN + 320}`);
 }
 const tints = PIPES.flatMap((p) => p.cells.map(([c, r]) =>
-  `<rect x="${(ORIGIN + c * CELL).toFixed(1)}" y="${(ORIGIN + r * CELL).toFixed(1)}" width="${CELL.toFixed(1)}" height="${CELL.toFixed(1)}" fill="${rgb(p.color)}" opacity=".3"/>`));
+  `<rect x="${(ORIGIN + c * CELL).toFixed(1)}" y="${(ORIGIN + r * CELL).toFixed(1)}" width="${CELL.toFixed(1)}" height="${CELL.toFixed(1)}" fill="${rgb(p.color)}" opacity=".26"/>`));
 const pipes = PIPES.map((p) => {
   const pts = p.cells.map(([c, r]) => at(c, r).map((v) => v.toFixed(1)).join(','));
   const [a, b] = [at(...p.cells[0]), at(...p.cells[p.cells.length - 1])];
@@ -154,7 +154,7 @@ const pipes = PIPES.map((p) => {
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 <defs><radialGradient id="bg" cx="50%" cy="8%" r="100%"><stop offset="0" stop-color="#3b3f9e"/><stop offset="1" stop-color="#10112e"/></radialGradient></defs>
 <rect width="512" height="512" rx="112" fill="url(#bg)"/>
-<rect x="${ORIGIN}" y="${ORIGIN}" width="320" height="320" fill="#07080f"/>
+<rect x="${ORIGIN}" y="${ORIGIN}" width="320" height="320" fill="#ffffff"/>
 ${tints.join('')}
 <path d="${lines.join('')}" stroke="${rgb(GRID)}" stroke-width="5"/>
 ${pipes.join('\n')}

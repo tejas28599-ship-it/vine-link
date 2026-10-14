@@ -174,7 +174,6 @@ function startLevel(n) {
   persist();
   $('level-title').textContent = `Level ${n}`;
   $('level-size').textContent = `${level.size}×${level.size}`;
-  $('level-pack').textContent = Levels.PACKS[Levels.packOf(n)].name;
   loadInto(level, `L${n}`);
   queueTutorials(level, n);
 }
@@ -185,7 +184,6 @@ function startDaily() {
   app.dailyKey = key;
   $('level-title').textContent = 'Daily Puzzle';
   $('level-size').textContent = '';
-  $('level-pack').textContent = new Date().toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
   show('game');
   $('loading').hidden = false;
   $('board').style.visibility = 'hidden';
@@ -536,16 +534,16 @@ function tutorialArt(kind) {
   let grid = '';
   for (let i = 0; i <= W; i++) grid += `<path d="M${i * S || 0.5} 0V${H * S}" />`;
   for (let i = 0; i <= H; i++) grid += `<path d="M0 ${i * S || 0.5}H${W * S}" />`;
-  const wrap = (body) => `<svg viewBox="-1 -1 ${W * S + 2} ${H * S + 2}" aria-hidden="true">${body}<g stroke="#363C6E" stroke-width="1.5">${grid}</g></svg>`;
+  const wrap = (body) => `<svg viewBox="-1 -1 ${W * S + 2} ${H * S + 2}" aria-hidden="true">${body}<g stroke="#CDD3F2" stroke-width="3">${grid}</g></svg>`;
   const R = '#FF0000', B = '#0000FF', Y = '#EEEE00', C = '#00FFFF';
   if (kind === 'rocks') {
-    return wrap(`<rect x="80" y="40" width="40" height="40" fill="#1C1F3D"/><path d="M90 50l20 20M110 50l-20 20" stroke="#4A5090" stroke-width="3"/>` +
+    return wrap(`<rect x="80" y="40" width="40" height="40" fill="#4B5170"/><path d="M90 50l20 20M110 50l-20 20" stroke="#8C94C2" stroke-width="3"/>` +
       pipe([[0, 1], [0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [4, 1]], B) + dot(0, 1, B) + dot(4, 1, B) +
       pipe([[0, 2], [1, 2], [2, 2], [3, 2], [4, 2]], R) + dot(0, 2, R) + dot(4, 2, R));
   }
   if (kind === 'bridges') {
     return wrap(pipe([[2, 0], [2, 1], [2, 2]], Y) +
-      `<rect x="80" y="48" width="40" height="24" fill="#2A2F5E"/>` +
+      `<rect x="80" y="48" width="40" height="24" fill="#AEB5DC"/>` +
       pipe([[0, 1], [1, 1], [2, 1], [3, 1], [4, 1]], C) +
       dot(2, 0, Y) + dot(2, 2, Y) + dot(0, 1, C) + dot(4, 1, C));
   }

@@ -1,8 +1,8 @@
 # Vine Link — Design Proposal
 
 > **Update:** the visuals moved from the original garden theme to a clean, high-contrast style:
-> black board, thin olive grid, solid dots, thick straight pipes and the classic bright palette
-> below. Names in the data model (`vines`, `seedColor`) are kept for code stability.
+> a white tiled game board on a deep indigo backdrop, outlined straight pipes, glossy dots and the
+> classic bright palette below. Names in the data model (`vines`, `seedColor`) are kept for code stability.
 
 A calm, mobile-first path-connecting puzzle. Plain HTML/CSS/vanilla JS (ES modules), no build
 step, hostable on GitHub Pages.
@@ -88,7 +88,8 @@ start, so vines cut mid-drag grow back if you pull away again.
 
 ## 4. Palette (12)
 
-The classic bright puzzle colors on a black board. Pink replaces maroon (too close to red).
+The classic bright puzzle colors on a white tiled game board, with a darker outline on every
+pipe and dot. Pink replaces maroon (too close to red); brown replaces white (invisible on white).
 Colorblind mode adds a unique symbol on every dot, so color is never the only cue.
 
 | # | Name    | Hex       | Symbol   |
@@ -102,6 +103,6 @@ Colorblind mode adds a unique symbol on every dot, so color is never the only cu
 | 6 | Magenta | `#FF00FF` | square   |
 | 7 | Pink    | `#FF8FC8` | heart    |
 | 8 | Purple  | `#800080` | ring     |
-| 9 | White   | `#FFFFFF` | hexagon  |
+| 9 | Brown   | `#8B5A2B` | hexagon  |
 | 10| Gray    | `#A6A6A6` | moon     |
 | 11| Lime    | `#00FF00` | bars     |

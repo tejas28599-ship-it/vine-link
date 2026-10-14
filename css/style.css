@@ -1,5 +1,5 @@
-/* Vine Link — "midnight" theme: a deep blue-indigo backdrop around a near-black board, so the
-   bright pipe colors pop. Mobile-first, portrait, safe-area aware. */
+/* Vine Link — "midnight" theme: a deep blue-indigo backdrop around a bright white game board.
+   Mobile-first, portrait, safe-area aware. */
 
 :root {
   --bg-glow: #3b3f9e;
@@ -383,7 +383,7 @@ svg { width: 22px; height: 22px; flex: none; }
 .fineprint { font-size: 11px; color: var(--ink-faint) !important; }
 
 .tut-art { display: grid; place-items: center; }
-.tut-art svg { width: 200px; height: 120px; border-radius: 8px; background: #07080f; }
+.tut-art svg { width: 200px; height: 120px; border-radius: 8px; background: #fff; }
 
 /* ---------- magnifier, confetti, toast ---------- */
 

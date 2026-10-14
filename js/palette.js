@@ -1,4 +1,5 @@
-// Vine Link — pipe colors: the classic, fully saturated puzzle set, shown on a black board.
+// Vine Link — pipe colors: the classic, fully saturated puzzle set, on a white game board
+// (brown stands in for white, which would vanish on white tiles).
 // Ordered so small levels use the most distinct colors first. Colorblind mode adds a unique
 // symbol on every dot, so color is never the only cue.
 
@@ -12,7 +13,7 @@ export const PALETTE = [
   { name: 'Magenta', hex: '#FF00FF', symbol: 'square' },
   { name: 'Pink', hex: '#FF8FC8', symbol: 'heart' },
   { name: 'Purple', hex: '#800080', symbol: 'ring' },
-  { name: 'White', hex: '#FFFFFF', symbol: 'hexagon' },
+  { name: 'Brown', hex: '#8B5A2B', symbol: 'hexagon' },
   { name: 'Gray', hex: '#A6A6A6', symbol: 'moon' },
   { name: 'Lime', hex: '#00FF00', symbol: 'bars' },
 ];
@@ -36,5 +37,6 @@ export const COLORS = PALETTE.map((p) => {
   return {
     rgb,
     light: mix(rgb, [255, 255, 255], 0.5),
+    edge: mix(rgb, [20, 20, 40], 0.38), // outline for pipes and dots on the white board
   };
 });
