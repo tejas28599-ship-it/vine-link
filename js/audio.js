@@ -135,6 +135,8 @@ export function winMelody() {
 
 export function vibrate(pattern) {
   try {
+    // Browsers refuse vibration until the user has interacted with the page.
+    if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
     if (navigator.vibrate) navigator.vibrate(pattern);
   } catch {
     /* unsupported */
