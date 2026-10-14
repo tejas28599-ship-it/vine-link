@@ -58,7 +58,7 @@ const app = {
   pack: 0,
 };
 
-const board = new BoardRenderer($('board'));
+const board = new BoardRenderer($('board'), $('magnifier'));
 const confetti = new Confetti($('confetti'));
 board.setColorblind(save.settings.colorblind);
 Sound.setEnabled(save.settings.sound);
@@ -159,11 +159,6 @@ function loadInto(level, key) {
   board.setLevel(level, app.state);
   updateHud(app.state);
   show('game');
-  // the board pops in for every new level
-  const cv = $('board');
-  cv.classList.remove('board-in');
-  void cv.offsetWidth;
-  cv.classList.add('board-in');
   // A restored level might already be finished (closed during the win animation).
   if (G.isSolved(level, app.state)) setTimeout(win, 300);
 }
@@ -461,24 +456,12 @@ function win() {
     $('win-detail').textContent = `Solved in ${state.moves} move${state.moves === 1 ? '' : 's'}` +
       (state.hintsUsed ? ` · ${state.hintsUsed} hint${state.hintsUsed === 1 ? '' : 's'}` : '');
     $('win-perfect').hidden = !perfect;
-    const stars = starsFor(level, state);
-    [...$('win-stars').children].forEach((el, i) => el.classList.toggle('on', i < stars));
-    $('win-stars').setAttribute('aria-label', `${stars} of 3 stars`);
     $('next-label').textContent = app.mode === 'daily' || last ? 'Back home' : 'Next level';
     if (last) $('win-detail').textContent += ' · all levels complete!';
     $('overlay-win').hidden = false;
     if (app.mode === 'campaign' && !last) startAutoAdvance();
     else $('auto-ring').style.setProperty('--p', '0%');
   }, 900);
-}
-
-/** 3 stars: perfect. 2: a few extra moves. 1: many extra moves, or any hint used. */
-function starsFor(level, state) {
-  const pairs = level.pairs.length;
-  if (state.hintsUsed > 0) return 1;
-  if (state.moves <= pairs) return 3;
-  if (state.moves <= pairs + Math.ceil(pairs / 2)) return 2;
-  return 1;
 }
 
 function startAutoAdvance() {
