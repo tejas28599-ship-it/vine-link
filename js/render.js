@@ -27,14 +27,13 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+const easeOutBack = (t) => 1 + 2.70158 * Math.pow(t - 1, 3) + 1.70158 * Math.pow(t - 1, 2);
 const luminance = ([r, g, b]) => (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
 
 export class BoardRenderer {
-  constructor(canvas, magnifier) {
+  constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
-    this.mag = magnifier;
-    this.magCtx = magnifier ? magnifier.getContext('2d') : null;
     this.level = null;
     this.cssSize = 0;
     this.dpr = 1;
@@ -62,6 +61,8 @@ export class BoardRenderer {
     this.coverTarget = new Float32Array(level.cellCount);
     this.coverColor = new Int8Array(level.cellCount).fill(-1);
     this.flashes = [];
+    this.sparks = [];
+    this.introT0 = performance.now(); // dots pop in one pair at a time
     this.celebrating = false;
     this.active = null;
     this.pointer = null;
@@ -84,13 +85,6 @@ export class BoardRenderer {
     this.canvas.style.height = `${cssSize}px`;
     this.canvas.width = Math.round(cssSize * dpr);
     this.canvas.height = Math.round(cssSize * dpr);
-    if (this.mag) {
-      const m = 116;
-      this.mag.width = Math.round(m * dpr);
-      this.mag.height = Math.round(m * dpr);
-      this.mag.style.width = `${m}px`;
-      this.mag.style.height = `${m}px`;
-    }
     if (this.level) this.buildStatic();
     this.request();
   }
@@ -145,7 +139,7 @@ export class BoardRenderer {
         ctx.stroke();
         continue;
       }
-      const lip = Math.max(1, cs * 0.05);
+      const lip = Math.max(1.5, cs * 0.075);
       ctx.fillStyle = TILE_SHADE;
       roundRect(ctx, x, y + lip, w, h - lip, r);
       ctx.fill();
@@ -192,7 +186,7 @@ export class BoardRenderer {
       if (complete !== f.on) {
         f.on = complete;
         f.t0 = instant ? now - 5000 : now;
-        if (complete && !instant) this.flashes.push({ color: c, t0: now });
+        if (complete && !instant) this.connectBurst(c, now);
       }
       if (next.length > 1) for (const cell of next) {
         this.coverTarget[cell] = 1;
@@ -205,8 +199,24 @@ export class BoardRenderer {
 
   /** Flash a pair's dots (used for hints). */
   pulse(color) {
-    this.flashes.push({ color, t0: performance.now() });
+    this.connectBurst(color, performance.now());
     this.request();
+  }
+
+  /** Ring + a burst of sparks from both dots of a freshly connected pair. */
+  connectBurst(c, now) {
+    this.flashes.push({ color: c, t0: now });
+    if (this.reduceMotion) return;
+    const cs = this.geom().cell;
+    const { a, b } = this.level.pairs[c];
+    for (const cell of [a, b]) {
+      const [x, y] = this.center(cell);
+      for (let i = 0; i < 9; i++) {
+        const ang = (i / 9) * TAU + Math.random() * 0.5;
+        const sp = cs * (2.2 + Math.random() * 2.2);
+        this.sparks.push({ x, y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, t0: now, life: 380 + Math.random() * 220, r: cs * (0.06 + Math.random() * 0.05), c });
+      }
+    }
   }
 
   setActive(active) {
@@ -216,7 +226,6 @@ export class BoardRenderer {
 
   setPointer(p) {
     this.pointer = p;
-    if (!p && this.mag) this.mag.classList.remove('show');
     this.request();
   }
 
@@ -239,7 +248,6 @@ export class BoardRenderer {
     this.lastT = now;
     const busy = this.step(dt, now) || this.celebrating || !!this.pointer;
     this.draw(now);
-    if (this.pointer) this.drawMagnifier();
     if (busy) this.request();
     else this.lastT = 0;
   }
@@ -267,6 +275,15 @@ export class BoardRenderer {
     }
     this.flashes = this.flashes.filter((f) => now - f.t0 < 450);
     if (this.flashes.length) busy = true;
+    for (const p of this.sparks) {
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.vx *= 1 - dt * 3;
+      p.vy = p.vy * (1 - dt * 3) + this.geom().cell * 6 * dt; // a little gravity
+    }
+    this.sparks = this.sparks.filter((p) => now - p.t0 < p.life);
+    if (this.sparks.length) busy = true;
+    if (now - this.introT0 < 300 + this.level.pairs.length * 45) busy = true;
     for (const f of this.done) if (now - f.t0 < 300) busy = true;
     return busy;
   }
@@ -323,6 +340,8 @@ export class BoardRenderer {
       const t = clamp((now - f.t0) / 300, 0, 1);
       // a quick "pop" when a pair connects
       let scale = f.on && !this.reduceMotion ? 1 + 0.22 * Math.sin(Math.PI * t) : 1;
+      if (!this.reduceMotion) scale *= easeOutBack(clamp((now - this.introT0 - c * 45) / 300, 0, 1));
+      if (scale <= 0.01) continue;
       if (this.celebrating) scale *= 1 + 0.06 * Math.sin(now / 180 + c);
       for (const cell of [a, b]) this.drawDot(c, cell, cs * 0.34 * scale);
     }
@@ -339,6 +358,14 @@ export class BoardRenderer {
         ctx.arc(x, y, cs * (0.34 + 0.4 * t), 0, TAU);
         ctx.stroke();
       }
+    }
+
+    for (const p of this.sparks) {
+      const t = (now - p.t0) / p.life;
+      ctx.fillStyle = rgba(t < 0.3 ? COLORS[p.c].light : COLORS[p.c].rgb, 1 - t);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * (1 - t * 0.5), 0, TAU);
+      ctx.fill();
     }
   }
 
@@ -369,10 +396,18 @@ export class BoardRenderer {
     ctx.stroke();
   }
 
-  /** A pipe with a darker edge, so light colors (yellow, cyan, lime) read on white tiles. */
+  /**
+   * A glossy tube: darker edge (so light colors read on white tiles), the color, then a soft
+   * shine stripe offset toward the light (top-left).
+   */
   strokePipe(pts, c, width) {
-    this.strokePts(pts, width + Math.max(2, width * 0.22), rgba(COLORS[c].edge));
+    const { ctx } = this;
+    this.strokePts(pts, width + Math.max(2, width * 0.24), rgba(COLORS[c].edge));
     this.strokePts(pts, width, rgba(COLORS[c].rgb));
+    ctx.save();
+    ctx.translate(-width * 0.13, -width * 0.16);
+    this.strokePts(pts, width * 0.28, 'rgba(255,255,255,0.42)');
+    ctx.restore();
   }
 
   /** Bridges: the vertical pipe passes under a small deck, the horizontal pipe runs over it. */
@@ -427,57 +462,24 @@ export class BoardRenderer {
     ctx.beginPath();
     ctx.arc(x, y, r, 0, TAU);
     ctx.fill();
-    ctx.fillStyle = rgba(col);
+    // a glossy marble: lit from the top-left
+    const inner = r * 0.86;
+    const grad = ctx.createRadialGradient(x - inner * 0.35, y - inner * 0.4, inner * 0.1, x, y, inner);
+    grad.addColorStop(0, rgba(COLORS[c].light));
+    grad.addColorStop(0.45, rgba(col));
+    grad.addColorStop(1, rgba(col));
+    ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(x, y, r * 0.86, 0, TAU);
+    ctx.arc(x, y, inner, 0, TAU);
     ctx.fill();
-    // glossy highlight
-    ctx.fillStyle = 'rgba(255,255,255,0.38)';
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
     ctx.beginPath();
-    ctx.ellipse(x - r * 0.28, y - r * 0.34, r * 0.34, r * 0.2, -0.5, 0, TAU);
+    ctx.ellipse(x - r * 0.3, y - r * 0.38, r * 0.26, r * 0.14, -0.6, 0, TAU);
     ctx.fill();
     if (this.colorblind) {
       const ink = luminance(col) > 0.5 ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.95)';
       drawSymbol(ctx, PALETTE[c].symbol, x, y, r * 0.62, ink);
     }
-  }
-
-  drawMagnifier() {
-    const { mag, magCtx: m, pointer, canvas, dpr } = this;
-    if (!mag || !pointer) return;
-    const W = mag.width, H = mag.height;
-    const zoom = 1.7;
-    const sw = W / zoom, sh = H / zoom;
-    const sx = pointer.px * dpr - sw / 2, sy = pointer.py * dpr - sh / 2;
-    m.setTransform(1, 0, 0, 1, 0, 0);
-    m.clearRect(0, 0, W, H);
-    m.save();
-    m.beginPath();
-    m.arc(W / 2, H / 2, W / 2 - 2 * dpr, 0, TAU);
-    m.clip();
-    m.fillStyle = FRAME;
-    m.fillRect(0, 0, W, H);
-    m.drawImage(canvas, sx, sy, sw, sh, 0, 0, W, H);
-    m.restore();
-    m.strokeStyle = 'rgba(60,66,130,0.9)';
-    m.lineWidth = 2.5 * dpr;
-    m.beginPath();
-    m.arc(W / 2, H / 2, W / 2 - 2 * dpr, 0, TAU);
-    m.stroke();
-
-    // above the finger, flipped sideways near the top of the screen
-    const rect = canvas.getBoundingClientRect();
-    const vx = rect.left + pointer.px, vy = rect.top + pointer.py;
-    const size = W / dpr;
-    let left = vx - size / 2;
-    let top = vy - size - 46;
-    if (top < 6) {
-      top = clamp(vy - size / 2, 6, window.innerHeight - size - 6);
-      left = vx > window.innerWidth / 2 ? vx - size - 46 : vx + 46;
-    }
-    left = clamp(left, 6, window.innerWidth - size - 6);
-    mag.style.transform = `translate(${left}px, ${top}px)`;
-    mag.classList.add('show');
   }
 }
 
