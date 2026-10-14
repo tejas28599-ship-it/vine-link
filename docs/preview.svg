@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 640" width="300" height="533" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="-8%" r="95%">
+      <stop offset="0" stop-color="#2a2a2f"/>
+      <stop offset="0.5" stop-color="#131315"/>
+      <stop offset="1" stop-color="#0a0a0b"/>
+    </radialGradient>
+  </defs>
+  <rect width="360" height="640" fill="url(#bg)"/>
+
+  <!-- top bar -->
+  <g>
+    <path d="M60 18l4 4v40l-4-4z" fill="#3a3a3f"/><path d="M18 58h42l4 4H22z" fill="#2a2a2e"/>
+    <rect x="18" y="18" width="42" height="40" fill="#121214" stroke="rgba(255,255,255,.28)"/>
+    <path d="M43 30l-9 8 9 8" fill="none" stroke="#f4f4f1" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="74" y="40" font-size="23" fill="#f4f4f1">Level 14</text>
+    <text x="163" y="38" font-size="11" fill="#69696f" font-family="system-ui, sans-serif" font-weight="700">5×5</text>
+    <text x="74" y="56" font-size="9" fill="#a6a6ab" font-family="system-ui, sans-serif" font-weight="700" letter-spacing="1">MOVES 4 · BEST 5</text>
+    <path d="M250 18l4 4v40l-4-4z" fill="#3a3a3f"/><path d="M210 58h40l4 4h-40z" fill="#2a2a2e"/>
+    <rect x="210" y="18" width="40" height="40" fill="#121214" stroke="rgba(255,255,255,.28)"/>
+    <g transform="translate(218 26)" fill="none" stroke="#f4f4f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7H5V3M5.4 7.1A8 8 0 1 1 4.3 15"/></g>
+    <path d="M298 18l4 4v40l-4-4z" fill="#3a3a3f"/><path d="M258 58h40l4 4h-40z" fill="#2a2a2e"/>
+    <rect x="258" y="18" width="40" height="40" fill="#121214" stroke="rgba(255,255,255,.28)"/>
+    <g transform="translate(266 26)" fill="none" stroke="#f4f4f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5"/></g>
+    <path d="M343 18l4 4v40l-4-4z" fill="#a8864a"/><path d="M306 58h37l4 4h-37z" fill="#7d6232"/>
+    <rect x="306" y="18" width="37" height="40" fill="#d9b46a"/>
+    <circle cx="324" cy="35" r="7" fill="none" stroke="#1a1408" stroke-width="2"/><path d="M321 46h6" stroke="#1a1408" stroke-width="2"/>
+    <line x1="16" y1="76" x2="344" y2="76" stroke="rgba(255,255,255,.1)"/>
+  </g>
+
+  <!-- the white board -->
+  <g transform="translate(25 140)">
+    <rect width="310" height="310" fill="#fff" stroke="rgba(255,255,255,.3)"/>
+    <g fill="#FF0000" opacity=".22"><rect x="2" y="2" width="61" height="61"/><rect x="63" y="2" width="61" height="61"/><rect x="124" y="2" width="61" height="61"/><rect x="124" y="63" width="61" height="61"/><rect x="2" y="63" width="61" height="61"/><rect x="2" y="124" width="61" height="61"/><rect x="185" y="63" width="61" height="61"/><rect x="246" y="63" width="61" height="61"/></g>
+    <g fill="#0000FF" opacity=".22"><rect x="63" y="63" width="61" height="61"/><rect x="63" y="124" width="61" height="61"/><rect x="2" y="185" width="61" height="61"/><rect x="63" y="185" width="61" height="61"/></g>
+    <g fill="#008D00" opacity=".22"><rect x="124" y="185" width="61" height="61"/><rect x="185" y="185" width="61" height="61"/><rect x="246" y="185" width="61" height="61"/><rect x="246" y="246" width="61" height="61"/></g>
+    <g fill="#EEEE00" opacity=".25"><rect x="2" y="246" width="61" height="61"/><rect x="63" y="246" width="61" height="61"/><rect x="124" y="246" width="61" height="61"/><rect x="185" y="246" width="61" height="61"/></g>
+    <g stroke="#E1E4F2"><path d="M63 0v310M124 0v310M185 0v310M246 0v310M0 63h310M0 124h310M0 185h310M0 246h310"/></g>
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="32,155 32,32 154,32 154,94 276,94" stroke="#990000" stroke-width="26"/>
+      <polyline points="32,155 32,32 154,32 154,94 276,94" stroke="#FF0000" stroke-width="21"/>
+      <polyline points="93,94 93,155 93,216 32,216" stroke="#000099" stroke-width="26"/>
+      <polyline points="93,94 93,155 93,216 32,216" stroke="#0000FF" stroke-width="21"/>
+      <polyline points="154,216 276,216 276,277" stroke="#005500" stroke-width="26"/>
+      <polyline points="154,216 276,216 276,277" stroke="#008D00" stroke-width="21"/>
+      <polyline points="32,277 215,277" stroke="#8f8f00" stroke-width="26"/>
+      <polyline points="32,277 215,277" stroke="#EEEE00" stroke-width="21"/>
+    </g>
+    <g>
+      <circle cx="32" cy="155" r="21" fill="#990000"/><circle cx="32" cy="155" r="18" fill="#FF0000"/>
+      <circle cx="276" cy="94" r="21" fill="#990000"/><circle cx="276" cy="94" r="18" fill="#FF0000"/>
+      <circle cx="93" cy="94" r="21" fill="#000099"/><circle cx="93" cy="94" r="18" fill="#0000FF"/>
+      <circle cx="32" cy="216" r="21" fill="#000099"/><circle cx="32" cy="216" r="18" fill="#0000FF"/>
+      <circle cx="154" cy="216" r="21" fill="#005500"/><circle cx="154" cy="216" r="18" fill="#008D00"/>
+      <circle cx="276" cy="277" r="21" fill="#005500"/><circle cx="276" cy="277" r="18" fill="#008D00"/>
+      <circle cx="32" cy="277" r="21" fill="#8f8f00"/><circle cx="32" cy="277" r="18" fill="#EEEE00"/>
+      <circle cx="215" cy="277" r="21" fill="#8f8f00"/><circle cx="215" cy="277" r="18" fill="#EEEE00"/>
+      <circle cx="215" cy="32" r="21" fill="#994d00"/><circle cx="215" cy="32" r="18" fill="#FF8000"/>
+      <circle cx="276" cy="32" r="21" fill="#994d00"/><circle cx="276" cy="32" r="18" fill="#FF8000"/>
+      <g fill="#fff" opacity=".45"><ellipse cx="26" cy="148" rx="6" ry="3.5"/><ellipse cx="270" cy="87" rx="6" ry="3.5"/><ellipse cx="87" cy="87" rx="6" ry="3.5"/><ellipse cx="26" cy="209" rx="6" ry="3.5"/><ellipse cx="148" cy="209" rx="6" ry="3.5"/><ellipse cx="270" cy="270" rx="6" ry="3.5"/><ellipse cx="26" cy="270" rx="6" ry="3.5"/><ellipse cx="209" cy="270" rx="6" ry="3.5"/><ellipse cx="209" cy="25" rx="6" ry="3.5"/><ellipse cx="270" cy="25" rx="6" ry="3.5"/></g>
+    </g>
+  </g>
+
+  <!-- bottom stats -->
+  <g font-family="system-ui, sans-serif" font-weight="700">
+    <line x1="16" y1="560" x2="344" y2="560" stroke="rgba(255,255,255,.1)"/>
+    <text x="18" y="584" font-size="9" fill="#a6a6ab" letter-spacing="1.4">PAIRS CONNECTED</text>
+    <text x="18" y="614" font-size="26" fill="#f4f4f1" font-family="Georgia, serif" font-weight="400">4/5</text>
+    <line x1="150" y1="572" x2="150" y2="620" stroke="rgba(255,255,255,.1)"/>
+    <text x="166" y="590" font-size="9" fill="#a6a6ab" letter-spacing="1.4">FILLED <tspan fill="#f4f4f1">88%</tspan></text>
+    <rect x="166" y="604" width="176" height="3" fill="rgba(255,255,255,.12)"/>
+    <rect x="166" y="604" width="155" height="3" fill="#d9b46a"/>
+  </g>
+</svg>
